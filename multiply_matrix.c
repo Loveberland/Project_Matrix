@@ -1,102 +1,118 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Function to get matrix dimensions from the user
 void get_dimension(int *rows, int *cols)
 {
-    printf("Type your rows: ");    // Function to get the matrix dimensions (rows and columns) from the user
-    scanf("%d", rows);             // Store the number of rows entered by the user in the variable pointed to by rows
-
-    printf("Type your cols: ");    // Prompt user to enter the number of columns
-    scanf("%d", cols);             // Store the number of columns entered by the user in the variable pointed to by cols
+    printf("Type your rows : ");           // Prompt user for number of rows
+    scanf("%d", rows);                    // Read the number of rows
+    printf("Type your cols : ");          // Prompt user for number of columns
+    scanf("%d", cols);                    // Read the number of columns
 }
 
+// Function to allocate memory and get matrix values from the user
 void get_matrix(int ***matA, int ***matB, int rows, int cols)
 {
-    *matA = (int **)malloc(rows * sizeof(int *));    // Allocate memory for matA as an array of pointers (each representing a row)
-    *matB = (int **)malloc(rows * sizeof(int *));    // Allocate memory for matB as an array of pointers (each representing a row)
+    *matA = (int **)malloc(rows * sizeof(int *));   // Allocate memory for matrix A's rows
+    *matB = (int **)malloc(rows * sizeof(int *));   // Allocate memory for matrix B's rows
     
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < rows; i++) 
     {
-        (*matA)[i] = (int *)malloc(cols * sizeof(int));    // Allocate memory for each column in row i of matA
-        (*matB)[i] = (int *)malloc(cols * sizeof(int));    // Allocate memory for each column in row i of matB
+        (*matA)[i] = (int *)malloc(cols * sizeof(int));  // Allocate memory for matrix A's columns
+        (*matB)[i] = (int *)malloc(cols * sizeof(int));  // Allocate memory for matrix B's columns
     }
-
-    printf("Enter elements for matrix A:\n");    // Prompt user to enter values for matrix A
-
-    for (int i = 0; i < rows; i++)
+    
+    printf("-------------------\n");                     // Display separator
+    printf("Enter values for matrix A\n");            // Prompt user for matrix A values
+    for(int i = 0 ; i < cols ; i++) 
     {
-        for (int j = 0; j < cols; j++)
+        printf("* ");                                 // Print column markers for clarity
+    }
+    printf("<--- This is your cols\n");               // Indicate this is the column count line
+    
+    for (int i = 0; i < rows; i++) 
+    {
+        for (int j = 0; j < cols; j++) 
         {
-            scanf("%d", &(*matA)[i][j]);    // Store each element in row i and column j of matA
+            scanf("%d", &(*matA)[i][j]);             // Read values into matrix A
         }
     }
-
-    printf("Enter elements for matrix B:\n");    // Prompt user to enter values for matrix B
-
-    for (int i = 0; i < rows; i++)
+    
+    printf("-------------------\n");                    // Display separator
+    printf("Enter values for matrix B\n");           // Prompt user for matrix B values
+    for(int i = 0 ; i < cols ; i++) 
     {
-        for (int j = 0; j < cols; j++)
+        printf("* ");                                // Print column markers for clarity
+    }
+    printf("<--- This is your cols\n");              // Indicate this is the column count line
+    
+    for (int i = 0; i < rows; i++) 
+    {
+        for (int j = 0; j < cols; j++) 
         {
-            scanf("%d", &(*matB)[i][j]);    // Store each element in row i and column j of matB
+            scanf("%d", &(*matB)[i][j]);            // Read values into matrix B
         }
     }
 }
 
+// Function to multiply two matrices
 void multiply(int **matA, int **matB, int rows, int cols)
 {
-    int **result = (int **)malloc(rows * sizeof(int *));    // Allocate memory for the result matrix
+    int **result = (int **)malloc(rows * sizeof(int *)); // Allocate memory for result matrix
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < rows; i++) 
     {
-        result[i] = (int *)malloc(cols * sizeof(int));    // Allocate memory for each row in result
+        result[i] = (int *)malloc(cols * sizeof(int));   // Allocate memory for result matrix's columns
     }
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < rows; i++) 
     {
-        for (int j = 0; j < cols; j++)
+        for (int j = 0; j < cols; j++) 
         {
-            result[i][j] = 0;    // Initialize the result element at (i, j) to 0
+            result[i][j] = 0;                           // Initialize result matrix cell to 0
 
-            for (int k = 0; k < cols; k++)
+            for (int k = 0; k < cols; k++) 
             {
-                result[i][j] += matA[i][k] * matB[k][j];    // Accumulate the product of corresponding elements of matA and matB for result[i][j]
+                result[i][j] += matA[i][k] * matB[k][j]; // Compute the matrix multiplication
             }
         }
     }
+    printf("--------------------\n");                   // Display separator
+    printf("Result of matrix multiplication\n");      // Print result header
 
-    printf("Result of matrix multiplication:\n");    // Display the result matrix
-
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < rows; i++) 
     {
-        for (int j = 0; j < cols; j++)
+        for (int j = 0; j < cols; j++) 
         {
-            printf("%d ", result[i][j]);    // Print each element in result
+            printf("%d ", result[i][j]);              // Print each value in the result matrix
         }
-        printf("\n");    // Newline after each row
+        printf("\n");                                 // Move to the next line for each row
     }
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < rows; i++) 
     {
-        free(result[i]);    // Free memory allocated for each row in result
+        free(result[i]);                              // Free memory allocated for result rows
     }
-    free(result);    // Free the array of row pointers
+    free(result);                                     // Free memory allocated for result matrix
 }
 
+// Main function
 void main()
 {
-    int rows, cols;               // Variables to store matrix dimensions
-    int **matA, **matB;           // Pointers to store dynamically allocated matrices
+    int rows, cols;                                  // Variables for dimensions
+    int **matA, **matB;                              // Pointers for matrices
 
-    get_dimension(&rows, &cols);    // Get matrix dimensions from the user
-    get_matrix(&matA, &matB, rows, cols);    // Populate matA and matB with user input
-    multiply(matA, matB, rows, cols);    // Multiply matrices and display the result
+    get_dimension(&rows, &cols);                    // Get dimensions from the user
+    get_matrix(&matA, &matB, rows, cols);           // Allocate and populate matrices
+    multiply(matA, matB, rows, cols);               // Multiply the matrices
 
-    for (int i = 0; i < rows; i++)
+    for (int i = 0; i < rows; i++) 
     {
-        free(matA[i]);    // Free memory allocated for each row in matA
-        free(matB[i]);    // Free memory allocated for each row in matB
+        free(matA[i]);                              // Free memory allocated for matrix A rows
+        free(matB[i]);                              // Free memory allocated for matrix B rows
     }
-    free(matA);    // Free the array of row pointers for matA
-    free(matB);    // Free the array of row pointers for matB
+    free(matA);                                     // Free memory allocated for matrix A
+    free(matB);                                     // Free memory allocated for matrix B
+    printf("Program is finish\n");                  // Indicate program termination
 }
 
