@@ -17,7 +17,7 @@ int main()
 	char *command = (char*)malloc(16 * sizeof(int));
 	if(command == NULL)
 	{
-		printf("Allocate memory error\nPlease contact us ---> https://github.com/Loveberland\n------------------------------\n"); 
+		printf("Allocate memory error\n------------------------------\n"); 
 		return 1;	
 	}	
 	
@@ -30,25 +30,25 @@ int main()
 		
 		if(strcmp(command, "add") == 0)
 		{
-			system("gcc Code/add_matrix.c Code/get_size_of_matrix.c Code/get_count_of_matrix.c Code/get_matrix.c -o Code/add_matrix.out && Code/add_matrix.out");
+			system("gcc src/add_matrix.c src/get_size_of_matrix.c src/get_count_of_matrix.c src/get_matrix.c -o src/add_matrix.out && src/add_matrix.out");
 			printf("\n------------------------------\n\nProgram additional matrix is complete\n\n------------------------------\n\n");
 			printf("\nIf you want to use this program more type command here (if no type \"quit\") ---> ");	
 		}	
 		else if(strcmp(command, "minus") == 0)
 		{
-			system("gcc Code/minus_matrix.c Code/get_size_of_matrix.c Code/get_count_of_matrix.c Code/get_matrix.c -o Code/minus_matrix.out && Code/minus_matrix.out");	
+			system("gcc src/minus_matrix.c src/get_size_of_matrix.c src/get_count_of_matrix.c src/get_matrix.c -o src/minus_matrix.out && src/minus_matrix.out");	
 			printf("\n------------------------------\n\nProgram minus matrix is complete\n\n------------------------------\n");
 			printf("\nIf you want to use this program more type command here (if no type \"quit\") ---> ");	
 		}	
 		else if(strcmp(command, "multiply") == 0)
 		{
-			system("gcc Code/multiply_matrix.c Code/get_size_of_matrix.c Code/get_count_of_matrix.c Code/get_matrix.c -o Code/multiply_matrix.out && Code/multiply_matrix.out");	
+			system("gcc src/multiply_matrix.c src/get_size_of_matrix.c src/get_count_of_matrix.c src/get_matrix.c -o src/multiply_matrix.out && src/multiply_matrix.out");	
 			printf("\n------------------------------\n\nProgram multiply matrix is complete\n\n------------------------------\n");
 			printf("\nIf you want to use this program more type command here (if no type \"quit\") ---> ");	
 		}	
 		else if(strcmp(command, "determinant") == 0)
 		{
-			system("gcc Code/determinant_matrix.c Code/get_size_of_matrix.c Code/get_count_of_matrix.c Code/get_matrix.c -o Code/determinant_matrix.out && Code/determinant_matrix.out");	
+			system("gcc src/determinant_matrix.c src/get_size_of_matrix.c src/get_count_of_matrix.c src/get_matrix.c -o src/determinant_matrix.out && src/determinant_matrix.out");	
 			printf("\n------------------------------\n\nProgram determinant matrix is complete\n\n------------------------------\n");
 			printf("\nIf you want to use this program more type command here (if no type \"quit\") ---> ");	
 		}

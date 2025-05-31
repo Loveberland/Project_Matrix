@@ -1,2 +1,0 @@
-Go to Project_Matrix and find makefile and use make to run make file.
-Good luck !!
