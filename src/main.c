@@ -3,6 +3,8 @@
 
 #include "input_handler.h"
 #include "matrix.h"
+#include "calculate.h"
+#include "display.h"
 
 void greedy() {
 	fprintf(stdout, "--- welcome to matrix calculator ---\n");
@@ -21,6 +23,7 @@ int main(void) {
 		mat[i] = *tmp;
 		free(tmp);	
 	}
+	add_mat(mat, n);
 	for (int i = 0; i < n; i++)
 		free(mat[i].data);
 	free(mat);

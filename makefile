@@ -3,6 +3,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -O2 -MMD -MP
 ASFLAGS = $(CFLAGS)
+LDFLAGS =
 
 TARGET = $(OUT_DIR)/calculator
 SRC_DIR = src
