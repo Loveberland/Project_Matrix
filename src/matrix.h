@@ -11,4 +11,4 @@ typedef struct {
 
 #define MAT(m, i, j) ((m)->data[(i) * (m)->cols + (j)])
 
-#endif MATRIX_H
+#endif
