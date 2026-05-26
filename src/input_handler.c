@@ -49,6 +49,5 @@ Matrix *get_mat(int cnt) {
 	mat->rows = rows;
 	mat->cols = cols;
 	mat->data = malloc(rows * cols * sizeof(double));	
-
 	return mat;
 }
