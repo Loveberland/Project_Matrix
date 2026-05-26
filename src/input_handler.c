@@ -41,6 +41,30 @@ size_t get_cols() {
 	return get_number("enter columns of matrix: ");
 }
 
+// bug need another design
+double get_number_double(char *txt) {
+	int number;
+	char s[64];
+	while (1) {	
+		fputs(txt, stdout);
+		fgets(s, sizeof(s), stdin);
+		s[strcspn(s, "\n")] = '\0';
+		for (char *c = &s[0]; *c != '\0'; c++) {
+			if (!isdigit((unsigned char) *c)) {
+				fputs("only number\n", stdout);
+				exit(1);
+			}
+		}
+		if (check)
+			continue;
+		number = atoi(s);
+		break;
+	}
+
+	return number;
+}
+
+// bug need another design
 Matrix *get_mat(int cnt) {
 	fprintf(stdout, "\nMatrix %d:\n", cnt);
 	size_t rows = get_rows();
@@ -49,5 +73,16 @@ Matrix *get_mat(int cnt) {
 	mat->rows = rows;
 	mat->cols = cols;
 	mat->data = malloc(rows * cols * sizeof(double));	
+	while (1) {
+		for (int i = 0; i < mat->cols; i++)
+			fputs("* ", stdout);
+		fputs("<-- this is your columns\n", stdout);
+
+		int valid = 1;
+		for (int i = 0; i < mat.rows * mat.cols; i++) {
+			char 
+			mat->data[i] = get_number_double();
+		}
+	}
 	return mat;
 }
