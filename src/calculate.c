@@ -15,5 +15,6 @@ int add_mat(Matrix *mat, int n) {
 		if (status)
 			return status;
 	}
+	print_mat(&mat[0]);
 	return status;
 }
