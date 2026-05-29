@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "matrix.h"
 #include "display.h"
@@ -7,6 +8,7 @@
 #define COLS 5
 
 int main(void) {
+	puts("\033[0;33mtest print_mat function\033[0m");
 	Matrix *mat = malloc(sizeof(Matrix));
 	mat->data = malloc(ROWS * COLS * sizeof(double));
 	mat->rows = ROWS;

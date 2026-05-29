@@ -59,12 +59,13 @@ test: $(TEST_BINS)
 	@echo ""
 	@pass=0; fail=0; \
 	for t in $(TEST_BINS); do \
-		echo "--- $$t ---"; \
+		echo "--- RUN $$t ---"; \
 		if ./$$t; then \
 			echo "$(GREEN) PASS$(RESET)"; pass=$$((pass+1)); \
 		else \
 			echo "$(RED) FAIL$(RESET) (exit $$?)"; fail=$$((fail+1)); \
 		fi; \
+		echo "--- END $$t ---"; \
 		echo ""; \
 	done; \
 	echo "------------------------------"; \
