@@ -1,5 +1,9 @@
 # write by claude
 
+GREEN  := $(shell tput -Txterm setaf 2)
+RED := $(shell tput -Txterm setaf 1)
+RESET  := $(shell tput -Txterm sgr0)
+
 CC = gcc
 CFLAGS = -Wall -Wextra -O2 -MMD -MP
 ASFLAGS = $(CFLAGS)
@@ -57,9 +61,9 @@ test: $(TEST_BINS)
 	for t in $(TEST_BINS); do \
 		echo "--- $$t ---"; \
 		if ./$$t; then \
-			echo " PASS"; pass=$$((pass+1)); \
+			echo "$(GREEN) PASS$(RESET)"; pass=$$((pass+1)); \
 		else \
-			echo " FAIL (exit $$?)"; fail=$$((fail+1)); \
+			echo "$(RED) FAIL$(RESET) (exit $$?)"; fail=$$((fail+1)); \
 		fi; \
 		echo ""; \
 	done; \
