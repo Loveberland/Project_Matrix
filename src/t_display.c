@@ -16,7 +16,7 @@ int main(void) {
 	for (int i = 0; i < ROWS; i++)
 		for (int j = 0; j < COLS; j++)
 			mat->data[i * COLS + j] = i * COLS + j;
-	print_mat(mat);
+	print_mat(mat, "result is:\n");
 
 	return (0);
 }

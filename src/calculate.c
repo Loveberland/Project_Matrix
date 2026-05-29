@@ -11,7 +11,7 @@ int add_mat(Matrix *mat, const int n) {
 		if (status)
 			return status;
 	}
-	print_mat(&mat[0]);
+	print_mat(&mat[0], "result is:\n");
 	return status;
 }
 
@@ -22,6 +22,6 @@ int sub_mat(Matrix *mat, const int n) {
 		if (status)
 			return status;
 	}
-	print_mat(&mat[0]);
+	print_mat(&mat[0], "result is:\n");
 	return status;
 }
