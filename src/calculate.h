@@ -1,5 +1,3 @@
-#include <stddef.h>
-
 #include "matrix.h"
 
 #ifndef CALCULATE_H
