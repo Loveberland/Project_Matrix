@@ -21,7 +21,7 @@
 
 	movq 16(%rdi), %rax
 	cmpq 16(%rsi), %rax
-	jne check_dims_fail
+	jne .check_dims_fail
 
 	imulq %rax, %rcx
 	ret
