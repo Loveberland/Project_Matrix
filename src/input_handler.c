@@ -136,10 +136,6 @@ Matrix *get_mat(int cnt) {
 	mat->cols = cols;
 	mat->data = malloc(rows * cols * sizeof(double));
 
-	for (size_t i = 0; i < cols; i++)
-		OUTS("* ");
-	OUTS("<-- this is your columns\n");
-
 	char prompt[BUF_SIZ];
 	for (size_t i = 0; i < rows * cols; i++) {
 		int plen = 0;
