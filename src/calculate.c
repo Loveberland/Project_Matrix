@@ -25,3 +25,14 @@ int sub_mat(Matrix *mat, const int n) {
 	print_mat(&mat[0], "result is:\n");
 	return status;
 }
+
+int mul_mat(Matrix *mat, const int n) {
+	int status = 0;
+	for (int i = 1; i < n; i++) {
+		status = _mul_mat(&mat[0], &mat[i]);
+		if (status)
+			return status;
+	}
+	print_mat(&mat[0], const int n);
+	return status;
+}
