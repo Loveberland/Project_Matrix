@@ -130,6 +130,7 @@ _sub_mat:
 	addq $8, %r9
 	decq %rcx
 	jnz .sub_tail
+	jmp .ret_suc
 
 .check_dims_mul:
 	movq 16(%rdi), %rcx
@@ -255,4 +256,5 @@ _mul_mat:
 
 .size _add_mat, . - _add_mat
 .size _sub_mat, . - _sub_mat
+.size _mul_mat, . - _mul_mat
 .section .note.GNU-stack, "", @progbits
