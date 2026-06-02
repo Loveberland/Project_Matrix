@@ -33,6 +33,6 @@ int mul_mat(Matrix *mat, const int n) {
 		if (status)
 			return status;
 	}
-	print_mat(&mat[0], const int n);
+	print_mat(&mat[0], "result is:\n");
 	return status;
 }

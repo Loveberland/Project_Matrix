@@ -22,12 +22,12 @@ int calculate_choice() {
 	enable_raw_mode();
 
 	int choice = 0;
-	const char *options[] = {"add", "sub"};
+	const char *options[] = {"add", "sub", "mul"};
 	char c;
 
 	while (1) {
 		fputs("\033[H\033[J", stdout);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 3; i++) {
 			if (i == choice)
 				fprintf(stdout, "-> \033[1;32m%s\033[0m \n", options[i]);
 			else
@@ -47,7 +47,7 @@ int calculate_choice() {
 					if (choice > 0)
 						choice--;
 				} else if (seq[1] == 'B') {
-					if (choice < 1)
+					if (choice < 2)
 						choice++;
 				}
 			}

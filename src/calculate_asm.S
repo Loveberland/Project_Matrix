@@ -1,8 +1,10 @@
 .section .text
 .globl _add_mat
 .globl _sub_mat
+.globl _mul_mat
 .type _add_mat, @function
 .type _sub_mat, @function
+.type _mul_mat, @function
 /*
  * %rdi = a (Matrix *)
  * %rsi = b (Matrix *)
@@ -128,6 +130,118 @@ _sub_mat:
 	addq $8, %r9
 	decq %rcx
 	jnz .sub_tail
+
+.check_dims_mul:
+	movq 16(%rdi), %rcx
+	movq 8(%rsi), %rax
+	cmpq %rax, %rcx
+	jne .check_dims_fail
+
+	movq 8(%rdi), %rax
+	imulq 16(%rsi), %rax
+	ret
+
+_mul_mat:
+	call .check_dims_mul
+
+	pushq %rbp
+	movq %rsp, %rbp
+	pushq %rbx
+	pushq %r12
+	pushq %r13
+	pushq %r14
+	pushq %r15
+	subq $24, %rsp
+
+	movq %rdi, -48(%rbp)
+	movq %rsi, -56(%rbp)
+
+	shlq $3, %rax
+	movq %rax, %rdi
+	call malloc@PLT
+	movq %rax, -64(%rbp)
+
+	movq -48(%rbp), %rdi
+	movq -56(%rbp), %rsi
+
+	movq 8(%rdi), %r8
+	movq 16(%rdi), %r9
+	movq 16(%rsi), %r10
+
+	movq 0(%rdi), %r11
+	movq 0(%rsi), %r12
+	movq -64(%rbp), %r13
+
+	xorq %r14, %r14
+
+.mul_i_loop:
+	cmpq %r8, %r14
+	jge .mul_i_end
+
+	xorq %r15, %r15
+
+.mul_j_loop:
+	cmpq %r10, %r15
+	jge .mul_j_end
+
+	vxorpd %xmm0, %xmm0, %xmm0
+
+	xorq %rbx, %rbx
+
+.mul_k_loop:
+	cmpq %r9, %rbx
+	jge .mul_k_end
+
+	movq %r14, %rax
+	imulq %r9, %rax
+	addq %rbx, %rax
+	vmovsd (%r11, %rax, 8), %xmm1
+
+	movq %rbx, %rax
+	imulq %r10, %rax
+	addq %r15, %rax
+
+	vmulsd (%r12, %rax, 8), %xmm1, %xmm1
+	vaddsd %xmm1, %xmm0, %xmm0
+
+	incq %rbx
+	jmp .mul_k_loop
+
+.mul_k_end:
+	movq %r14, %rax
+	imulq %r10, %rax
+	addq %r15, %rax
+	vmovsd %xmm0, (%r13, %rax, 8)
+
+	incq %r15
+	jmp .mul_j_loop
+
+.mul_j_end:
+	incq %r14 
+	jmp .mul_i_loop
+
+.mul_i_end:
+	movq -48(%rbp), %rdi
+	movq 0(%rdi), %rdi
+	call free@PLT
+
+	movq -48(%rbp), %rdi
+	movq -64(%rbp), %rax
+	movq %rax, 0(%rdi)
+
+	movq -56(%rbp), %rsi
+	movq 16(%rsi), %rcx
+	movq %rcx, 16(%rdi)
+
+	xorq %rax, %rax
+	addq $24, %rsp
+	popq %r15
+	popq %r14
+	popq %r13
+	popq %r12
+	popq %rbx
+	popq %rbp
+	ret
 
 /* ret 0 */
 .ret_suc:
