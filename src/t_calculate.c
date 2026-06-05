@@ -86,7 +86,7 @@ int t_sub_mat() {
 
 int t_mul_mat() {
 	int status = 0;
-	puts("\n\033[0;33mtest sub_mat function\033[0m");
+	puts("\n\033[0;33mtest mul_mat function\033[0m");
 	puts("matrix count is 3");
 	puts("matrix size is 2x2");
 	Matrix *mat = malloc(3 * sizeof(Matrix));
