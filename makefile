@@ -1,23 +1,53 @@
-# write by claude
+# find OS
+ifeq ($(OS), Windows_NT)
+	PLATFORM := Windows
+	DEL := rmdir /s
+	MKDIR := mkdir
+else
+	UNAME_S := $(shell uname -s 2>/dev/null)
+	ifeq ($(UNAME_S), Linux)
+		PLATFORM := Linux
+		DEL := rm -rf
+		MKDIR := mkdir -p
+	else
+		PLATFORM := Unknown
+		DEL :=
+		MKDIR :=
+	endif
+endif
 
-GREEN  := $(shell tput -Txterm setaf 2)
-RED := $(shell tput -Txterm setaf 1)
-RESET  := $(shell tput -Txterm sgr0)
+# initial color
+ifeq ($(PLATFORM), Windows)
+	GREEN :=
+	RED :=
+	RESET :=
+else
+	GREEN  := $(shell tput -Txterm setaf 2)
+	RED := $(shell tput -Txterm setaf 1)
+	RESET := $(shell tput -Txterm sgr0)
+endif
 
 CC = gcc
 CFLAGS = -Wall -Wextra -O2 -MMD -MP
 ASFLAGS = $(CFLAGS)
 LDFLAGS =
 
-TARGET = $(OUT_DIR)/calculator
 SRC_DIR = src
 OUT_DIR = out
 
-# source code
-SRCS_C := $(filter-out $(SRC_DIR)/t_%.c, $(wildcard $(SRC_DIR)/*.c))
-SRCS_S := $(wildcard $(SRC_DIR)/*.S)
+# platform specific setting
+ifeq ($(PLATFORM), Windows)
+	TARGET := $(OUT_DIR)/calculatator.exe
+	SRC_S := $(filter-out $(SRC_DIR)/calculate_asm.S, $(wildcard $(SRC_DIR)/*.S))
+else
+	TARGET = $(OUT_DIR)/calculator
+	SRC_S := $(filter-out $(SRC_DIR)/calculate_asm_win.S, $(wildcard $(SRC_DIR)/*.S))
+endif
 
-# object file
+# C source code
+SRCS_C := $(filter-out $(SRC_DIR)/t_%.c, $(wildcard $(SRC_DIR)/*.c))
+
+# object files
 OBJS_C := $(patsubst $(SRC_DIR)/%.c, $(OUT_DIR)/%.o, $(SRCS_C))
 OBJS_S := $(patsubst $(SRC_DIR)/%.S, $(OUT_DIR)/%.o, $(SRCS_S))
 OBJS := $(OBJS_C) $(OBJS_S)
@@ -36,7 +66,7 @@ all: $(TARGET)
 
 # create out/ directory
 $(OUT_DIR):
-	mkdir -p $(OUT_DIR)
+	$(MKDIR) $(OUT_DIR)
 
 # link all object file to binary file
 $(TARGET): $(OBJS) | $(OUT_DIR)
@@ -80,4 +110,4 @@ run: $(TARGET)
 
 # clear all output file
 clean:
-	rm -rf $(OUT_DIR)
+	$(DEL) $(OUT_DIR)

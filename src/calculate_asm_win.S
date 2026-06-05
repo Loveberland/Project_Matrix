@@ -1,18 +1,18 @@
 .section .text
-.globl _add_mat
-.globl _sub_mat
-.globl _mul_mat
-.type _add_mat, @function
-.type _sub_mat, @function
-.type _mul_mat, @function
+.globl _add_mat_w
+.globl _sub_mat_w
+.globl _mul_mat_w
+.type _add_mat_w, @function
+.type _sub_mat_w, @function
+.type _mul_mat_w, @function
 
-_add_mat:
+_add_mat_w:
 
-_sub_mat:
+_sub_mat_w:
 
-_mul_mat:
+_mul_mat_w:
 
-.size _add_mat, . - _add_mat
-.size _sub_mat, . - _sub_mat
-.size _mul_mat, . - _mul_mat
+.size _add_mat_w, . - _add_mat_w
+.size _sub_mat_w, . - _sub_mat_w
+.size _mul_mat_w, . - _mul_mat_w
 .section .note.GNU-stack, "", @progbits
