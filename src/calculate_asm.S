@@ -2,6 +2,9 @@
 .globl _add_mat
 .globl _sub_mat
 .globl _mul_mat
+.globl _add_mat_w
+.globl _sub_mat_w
+.globl _mul_mat_w
 .type _add_mat, @function
 .type _sub_mat, @function
 .type _mul_mat, @function
@@ -244,6 +247,9 @@ _mul_mat:
 	popq %rbp
 	ret
 
+_add_mat_w:
+_sub_mat_w:
+_mul_mat_w:
 /* ret 0 */
 .ret_suc:
 	xorq %rax, %rax

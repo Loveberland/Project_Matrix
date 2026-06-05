@@ -1,8 +1,10 @@
 # find OS
 ifeq ($(OS), Windows_NT)
 	PLATFORM := Windows
-	DEL := rmdir /s
+	EXE := .exe
+	DEL := rmdir /s /q
 	MKDIR := mkdir
+	SHELL := cmd.exe
 else
 	UNAME_S := $(shell uname -s 2>/dev/null)
 	ifeq ($(UNAME_S), Linux)
@@ -37,7 +39,7 @@ OUT_DIR = out
 
 # platform specific setting
 ifeq ($(PLATFORM), Windows)
-	TARGET := $(OUT_DIR)/calculatator.exe
+	TARGET := $(OUT_DIR)/calculator.exe
 	SRC_S := $(filter-out $(SRC_DIR)/calculate_asm.S, $(wildcard $(SRC_DIR)/*.S))
 else
 	TARGET = $(OUT_DIR)/calculator
@@ -48,15 +50,15 @@ endif
 SRCS_C := $(filter-out $(SRC_DIR)/t_%.c, $(wildcard $(SRC_DIR)/*.c))
 
 # object files
-OBJS_C := $(patsubst $(SRC_DIR)/%.c, $(OUT_DIR)/%.o, $(SRCS_C))
-OBJS_S := $(patsubst $(SRC_DIR)/%.S, $(OUT_DIR)/%.o, $(SRCS_S))
+OBJS_C := $(patsubst $(SRC_DIR)/%.c, $(OUT_DIR)/%.o, $(SRCS_C)) 
+OBJS_S := $(patsubst $(SRC_DIR)/%.S, $(OUT_DIR)/%.o, $(SRC_S))
 OBJS := $(OBJS_C) $(OBJS_S)
 
 DEPS := $(OBJS:.o=.d)
 
 # test file
 TEST_SRCS := $(wildcard $(SRC_DIR)/t_*.c)
-TEST_BINS := $(patsubst $(SRC_DIR)/t_%.c, $(OUT_DIR)/t_%, $(TEST_SRCS))
+TEST_BINS := $(patsubst $(SRC_DIR)/t_%.c, $(OUT_DIR)/t_%$(EXE), $(TEST_SRCS))
 
 TEST_DEPS := $(filter-out $(OUT_DIR)/main.o, $(OBJS))
 
@@ -81,10 +83,22 @@ $(OUT_DIR)/%.o: $(SRC_DIR)/%.S | $(OUT_DIR)
 	$(CC) $(ASFLAGS) -c $< -o $@
 
 # build test binary file
-$(OUT_DIR)/t_%: $(SRC_DIR)/t_%.c $(TEST_DEPS) | $(OUT_DIR)
+$(OUT_DIR)/t_%$(EXE): $(SRC_DIR)/t_%.c $(TEST_DEPS) | $(OUT_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-# run all test file
+ifeq ($(PLATFORM), Windows)
+test: $(TEST_BINS)
+	@echo.
+	@for %%t in ($(subst /,\,$(TEST_BINS))) do ( \
+		echo --- RUN %%t --- && \
+		%%t && \
+		echo --- END %%t --- && \
+		echo. \
+	)
+
+run: $(TARGET)
+	$(subst /,\,$(TARGET))
+else
 test: $(TEST_BINS)
 	@echo ""
 	@pass=0; fail=0; \
@@ -102,9 +116,10 @@ test: $(TEST_BINS)
 	echo "result: $$pass passed, $$fail failed"; \
 	[ $$fail -eq 0 ]
 
-# run 
+# Linux Bash compatible run
 run: $(TARGET)
 	./$(TARGET)
+endif
 
 -include $(DEPS)
 
