@@ -15,7 +15,57 @@
 .type _mul_mat, @function
 #endif
 
+.check_dims:
+	movq 8(%rcx), %r10
+	cmpq 8(%rdx), %r10
+	jne .check_dims_fail
+
+	movq 16(%rcx), %rax
+	cmpq 16(%rdx), %rax
+	jne .check_dims_fail
+
+	imulq %rax, %r10
+	ret
+
+.check_dims_fail:
+	addq $8, %rsp
+	jmp .ret_dim_err
+
 _add_mat_w:
+	call .check_dims
+	testq %r10, %r10
+	jz .ret_suc
+
+	movq 0(%rcx), %r8
+	movq 0(%rdx), %r9
+
+	movq %r10, %rax
+	shrq $2, %rax
+	jz .add_tail
+
+.add_vec_loop:
+	vmovupd (%r9), %ymm0
+	vaddpd (%r8), %ymm0, %ymm0
+	vmovupd %ymm0, (%r8)
+	addq $32, %r8
+	addq $32, %r9
+	decq %rax
+	jnz .add_vec_loop
+
+	vzeroupper
+	andq $3, %r10
+	jz .ret_suc
+
+.add_tail:
+	movsd (%r9), %xmm0
+	addsd (%r8), %xmm0
+	movsd %xmm0, (%r8)
+	addq $8, %r8
+	addq $8, %r9
+	decq %r10
+	jnz .add_tail
+	jmp .ret_suc
+
 _sub_mat_w:
 _mul_mat_w:
 _add_mat:
