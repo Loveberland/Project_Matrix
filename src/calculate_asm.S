@@ -135,6 +135,8 @@ _sub_mat:
 	jnz .sub_tail
 	jmp .ret_suc
 
+/* return -1 if a->cols != b->rows */
+/* %rax keep elements amount(a->rows * b->cols) */
 .check_dims_mul:
 	movq 16(%rdi), %rcx
 	movq 8(%rsi), %rax
@@ -157,14 +159,18 @@ _mul_mat:
 	pushq %r15
 	subq $24, %rsp
 
+	/* save value in matrix before call malloc */
 	movq %rdi, -48(%rbp)
 	movq %rsi, -56(%rbp)
 
+	/* %rax *= 8(sizeof(double) * %rax) */
 	shlq $3, %rax
 	movq %rax, %rdi
+	/* malloc return storage to %rax, use %rdi for bytes amount */
 	call malloc@PLT
 	movq %rax, -64(%rbp)
 
+	/* move value in matrix to %rdi(a->data), %rsi(b->data) */
 	movq -48(%rbp), %rdi
 	movq -56(%rbp), %rsi
 
@@ -172,69 +178,103 @@ _mul_mat:
 	movq 16(%rdi), %r9
 	movq 16(%rsi), %r10
 
+	/* %r11 = a->data, %r12 = b->data */
 	movq 0(%rdi), %r11
 	movq 0(%rsi), %r12
+	/* %r13 = result(a->data * b->data) */
 	movq -64(%rbp), %r13
 
+	/* i = 0 */
 	xorq %r14, %r14
 
 .mul_i_loop:
+	/* i < a->rows */
 	cmpq %r8, %r14
 	jge .mul_i_end
 
+	/* j = 0 */
 	xorq %r15, %r15
 
 .mul_j_loop:
+	/* j < b->cols */
 	cmpq %r10, %r15
 	jge .mul_j_end
 
+	/* %xmm0 = 0.0 */
 	vxorpd %xmm0, %xmm0, %xmm0
 
+	/* k = 0 */
 	xorq %rbx, %rbx
 
 .mul_k_loop:
+	/* k < b->cols */
 	cmpq %r9, %rbx
 	jge .mul_k_end
 
+	/* %rax = i */
 	movq %r14, %rax
+	/* %rax *= b->cols */
 	imulq %r9, %rax
+	/* %rax += k */
 	addq %rbx, %rax
+	/* %xmm1 = a->data[i][k] */
 	vmovsd (%r11, %rax, 8), %xmm1
 
+	/* %rax = i */
 	movq %rbx, %rax
+	/* %rax *= a->cols */
 	imulq %r10, %rax
+	/* %rax += j */
 	addq %r15, %rax
 
+	/* %xmm1 *= b->data[k][j] */
 	vmulsd (%r12, %rax, 8), %xmm1, %xmm1
+	/* %xmm0 += %xmm1(fixing error of IEEE754) */
 	vaddsd %xmm1, %xmm0, %xmm0
 
+	/* k++ */
 	incq %rbx
 	jmp .mul_k_loop
 
 .mul_k_end:
+	/* %rax = i */
 	movq %r14, %rax
+	/* %rax *= a->rows */
 	imulq %r10, %rax
+	/* %rax *= j */
 	addq %r15, %rax
+	/* keep %xmm0 in %r13 */
 	vmovsd %xmm0, (%r13, %rax, 8)
 
+	/* j++ */
 	incq %r15
 	jmp .mul_j_loop
 
 .mul_j_end:
+	/* i++ */
 	incq %r14 
 	jmp .mul_i_loop
 
 .mul_i_end:
+	/* move data(Matrix *a) in stack to %rdi */
 	movq -48(%rbp), %rdi
+	/* %rdi = a->data */
 	movq 0(%rdi), %rdi
+	/* free a->data */
 	call free@PLT
 
+	/* move data(Matrix *a) in stack to %rdi */
 	movq -48(%rbp), %rdi
+	/* move result in stack to %rax */
 	movq -64(%rbp), %rax
+	/* a->data = result */
 	movq %rax, 0(%rdi)
 
+	/* move data(Matrix *b) in stack to %rsi */
 	movq -56(%rbp), %rsi
+	/* %rcx = b->cols */
 	movq 16(%rsi), %rcx
+	/* a->cols = %rcx */
 	movq %rcx, 16(%rdi)
 
 	xorq %rax, %rax
