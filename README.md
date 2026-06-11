@@ -21,7 +21,6 @@ Before running the program, make sure you have the following installed:
 ### For compile
 ```
 make
-
 ```
 ### For run
 ```
