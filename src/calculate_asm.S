@@ -1,3 +1,20 @@
+/*
+ * x86-64 AT&T, Linux
+ *
+ * Functions:
+ *	_add_mat_w(Matrix *a, Matrix *b) -> a[i][j] += b[i][j]
+ *	_sub_mat_w(Matrix *a, Matrix *b) -> a[i][j] -= b[i][j]
+ *	_mul_mat_w(Matrix *a, Matrix *b) -> a *= b
+ *
+ * Arguments:
+ * 	%rdi = Matrix *a
+ * 	%rsi = Matrix *b
+ *
+ * Return value:
+ *	0 = success
+ *	-1 = dimension mismatch
+ */
+
 .section .text
 .globl _add_mat
 .globl _sub_mat

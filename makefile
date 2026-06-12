@@ -89,17 +89,17 @@ $(OUT_DIR)/t_%$(EXE): $(SRC_DIR)/t_%.c $(TEST_DEPS) | $(OUT_DIR)
 ifeq ($(PLATFORM), Windows)
 test: $(TEST_BINS)
 	@setlocal EnableDelayedExpansion & \
-	set pass=0 & set fail=0 & \
+	set pass=0& set fail=0& \
 	for %%t in ($(subst /,\,$(TEST_BINS))) do ( \
 		echo --- RUN %%t --- & \
 		%%t & \
-		if !errorlevel! equ 0 ( set /a pass+=1 & echo  PASS ) else ( set /a fail+=1 & echo  FAIL ) & \
+		(if !errorlevel! equ 0 ( set /a pass+=1 & echo  PASS ) else ( set /a fail+=1 & echo  FAIL )) & \
 		echo --- END %%t --- & \
 		echo. \
 	) & \
 	echo ------------------------------ & \
 	echo result: !pass! passed, !fail! failed & \
-	if !fail! equ 0 (exit /b 0) else (exit /b 1)
+	cmd /c exit !fail!
 run: $(TARGET)
 	$(subst /,\,$(TARGET))
 else

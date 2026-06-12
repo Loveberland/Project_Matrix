@@ -1,3 +1,20 @@
+/*
+ * x86_64 AT&T, Windows
+ *
+ * Functions:
+ *	_add_mat_w(Matrix *a, Matrix *b) -> a[i][j] += b[i][j]
+ *	_sub_mat_w(Matrix *a, Matrix *b) -> a[i][j] -= b[i][j]
+ *	_mul_mat_w(Matrix *a, Matrix *b) -> a *= b
+ *
+ * Arguments:
+ * 	%rcx = Matrix *a
+ * 	%rdx = Matrix *b
+ *
+ * Return value:
+ *	0 = success
+ *	-1 = dimension mismatch
+ */
+
 .section .text
 
 .globl _add_mat
@@ -76,7 +93,7 @@ _sub_mat_w:
 
 	
 	movq %r10, %rax
-	shlq $2, %rax
+	shrq $2, %rax
 	jz .sub_tail
 
 .sub_vec_loop:
@@ -103,9 +120,9 @@ _sub_mat_w:
 	jmp .ret_suc
 
 .check_dims_mul:
-	movq 16(%rcx), %r10
+	movq 16(%rcx), %r8
 	movq 8(%rdx), %rax
-	cmpq %rax, %r10
+	cmpq %rax, %r8
 	jne .check_dims_fail
 
 	movq 8(%rcx), %rax
@@ -113,6 +130,106 @@ _sub_mat_w:
 	ret
 
 _mul_mat_w:
+	call .check_dims_mul
+
+	pushq %rbp
+	movq %rsp, %rbp
+	pushq %rbx
+	pushq %r12
+	pushq %r13
+	pushq %r14
+	pushq %r15
+	subq $56, %rsp
+
+	movq %rcx, -48(%rbp)
+	movq %rdx, -56(%rbp)
+
+	shlq $3, %rax
+	movq %rax, %rcx
+	call malloc
+	movq %rax, -64(%rbp)
+
+	movq -48(%rbp), %rcx
+	movq -56(%rbp), %rdx
+
+	movq 8(%rcx), %r8
+	movq 16(%rcx), %r9
+	movq 16(%rdx), %r10
+	movq 0(%rcx), %r11
+	movq 0(%rdx), %r12
+	movq -64(%rbp), %r13
+	
+	xorq %r14, %r14
+
+.mul_i_loop_w:
+	cmpq %r8, %r14
+	jge .mul_i_end_w
+
+	xorq %r15, %r15
+
+.mul_j_loop_w:
+	cmpq %r10, %r15
+	jge .mul_j_end_w
+
+	vxorpd %xmm0, %xmm0, %xmm0
+
+	xorq %rbx, %rbx
+
+.mul_k_loop_w:
+	cmpq %r9, %rbx
+	jge .mul_k_end_w
+
+	movq %r14, %rax
+	imulq %r9, %rax
+	addq %rbx, %rax
+	vmovsd (%r11, %rax, 8), %xmm1
+
+	movq %rbx, %rax
+	imulq %r10, %rax
+	addq %r15, %rax
+	vmulsd (%r12, %rax, 8), %xmm1, %xmm1
+
+	vaddsd %xmm1, %xmm0, %xmm0
+
+	incq %rbx
+	jmp .mul_k_loop_w
+
+.mul_k_end_w:
+	movq %r14, %rax
+	imulq %r10, %rax
+	addq %r15, %rax
+	vmovsd %xmm0, (%r13, %rax, 8)
+
+	incq %r15
+	jmp .mul_j_loop_w
+
+.mul_j_end_w:
+	incq %r14
+	jmp .mul_i_loop_w
+
+.mul_i_end_w:
+	movq -48(%rbp), %rcx
+	movq 0(%rcx), %rcx
+	call free
+
+	movq -48(%rbp), %rcx
+	movq -64(%rbp), %rax
+	movq %rax, 0(%rcx)
+
+	movq -56(%rbp), %rdx
+	movq 16(%rdx), %rax
+	movq %rax, 16(%rcx)
+
+	xorq %rax, %rax
+	addq $56, %rsp
+	popq %r15
+	popq %r14
+	popq %r13
+	popq %r12
+	popq %rbx
+	popq %rbp
+	ret
+
 _add_mat:
 _sub_mat:
 _mul_mat:
