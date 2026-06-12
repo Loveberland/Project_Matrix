@@ -9,5 +9,8 @@ int mul_mat(Matrix *mat, int n);
 int _add_mat(Matrix *a, const Matrix *b);
 int _sub_mat(Matrix *a, const Matrix *b);
 int _mul_mat(Matrix *a, const Matrix *b);
+int _add_mat_w(Matrix *a, const Matrix *b);
+int _sub_mat_w(Matrix *a, const Matrix *b);
+int _mul_mat_w(Matrix *a, const Matrix *b);
 
 #endif
