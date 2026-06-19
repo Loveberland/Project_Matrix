@@ -19,12 +19,15 @@
 .globl _add_mat
 .globl _sub_mat
 .globl _mul_mat
+.globl _det_mat
 .globl _add_mat_w
 .globl _sub_mat_w
 .globl _mul_mat_w
+.globl _det_mat_w
 .type _add_mat, @function
 .type _sub_mat, @function
 .type _mul_mat, @function
+.type _det_mat, @function
 /*
  * %rdi = a (Matrix *)
  * %rsi = b (Matrix *)
@@ -304,9 +307,13 @@ _mul_mat:
 	popq %rbp
 	ret
 
+_det_mat:
+
 _add_mat_w:
 _sub_mat_w:
 _mul_mat_w:
+_det_mat_w:
+
 /* ret 0 */
 .ret_suc:
 	xorq %rax, %rax
@@ -320,4 +327,5 @@ _mul_mat_w:
 .size _add_mat, . - _add_mat
 .size _sub_mat, . - _sub_mat
 .size _mul_mat, . - _mul_mat
+.size _det_mat, . - _det_mat
 .section .note.GNU-stack, "", @progbits

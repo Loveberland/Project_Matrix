@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <math.h>
 
 #include "calculate.h"
 #include "matrix.h"
@@ -47,4 +48,17 @@ int mul_mat(Matrix *mat, const int n) {
 	}
 	print_mat(&mat[0], "result is:\n");
 	return status;
+}
+
+int det_mat(Matrix *mat) {
+	double result;
+	#ifdef _WIN32
+		result = _det_mat_w(mat);
+	#else
+		result = _det_mat(mat);
+	#endif
+	if (result == NAN)
+		return result;
+	print_det(result);
+	return (0);
 }

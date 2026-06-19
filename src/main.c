@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "input_handler.h"
 #include "matrix.h"
@@ -28,15 +29,19 @@ int main(void) {
 	if (c == 0) {
 		int add_status = add_mat(mat, n);	
 		if (add_status)
-			puts("something went wrong, can't add matrix");
+			puts("something went wrong, can't addition matrix");
 	} else if (c == 1) {
 		int sub_status = sub_mat(mat, n);
 		if (sub_status)
-			puts("something went wrong, can't sub matrix");
+			puts("something went wrong, can't subtraction matrix");
 	} else if (c == 2) {
 		int mul_status = mul_mat(mat, n);
 		if (mul_status)
-			puts("something went wrong, can't mul matrix");
+			puts("something went wrong, can't multiplication matrix");
+	} else if (c == 3) {
+		int det_status = det_mat(mat);
+		if (det_status == NAN)
+			puts("something went wrong, can't find determinant");
 	} else
 		puts("something went wrong");
 	for (int i = 0; i < n; i++)

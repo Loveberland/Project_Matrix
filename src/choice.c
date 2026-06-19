@@ -41,11 +41,12 @@ int calculate_choice() {
 	#endif
 
 	int choice = 0;
-	const char *options[] = {"add", "sub", "mul"};
+	const char *options[] = {"addition", "subtraction", "multiplication", "determinant"};
+	const int len = 4;
 
 	while (1) {
 		fputs("\033[H\033[J", stdout);
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < len; i++) {
 			if (i == choice)
 				fprintf(stdout, "-> \033[1;32m%s\033[0m \n", options[i]);
 			else
@@ -61,7 +62,7 @@ int calculate_choice() {
 					if (choice > 0)
 						choice--;
 				} else if (arrow == 80) {	// down arrow
-					if (choice < 2)
+					if (choice < len - 1)
 						choice++;
 				}
 			} else if (c == '\r' || c == '\n')
@@ -81,7 +82,7 @@ int calculate_choice() {
 						if (choice > 0)
 							choice--;
 					} else if (seq[1] == 'B') {	// down arrow
-						if (choice < 2)
+						if (choice < len - 1)
 							choice++;
 					}
 				}

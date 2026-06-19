@@ -10,3 +10,7 @@ void print_mat(const Matrix *m, const char *s) {
 		putchar('\n');
 	}
 }
+
+void print_det(const double result) {
+	fprintf(stdout, "result is: %8.3f\n", result);
+}

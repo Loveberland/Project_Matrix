@@ -20,16 +20,20 @@
 .globl _add_mat
 .globl _sub_mat
 .globl _mul_mat
+.globl _det_mat
 .globl _add_mat_w
 .globl _sub_mat_w
 .globl _mul_mat_w
+.globl _det_mat_w
 #ifndef _WIN32
 .type _add_mat_w, @function
 .type _sub_mat_w, @function
 .type _mul_mat_w, @function
+.type _det_mat_w, @function
 .type _add_mat, @function
 .type _sub_mat, @function
 .type _mul_mat, @function
+.type _det_mat, @function
 #endif
 
 .check_dims:
@@ -230,6 +234,8 @@ _mul_mat_w:
 	popq %rbp
 	ret
 
+_det_mat_w:
+
 _add_mat:
 _sub_mat:
 _mul_mat:
@@ -245,5 +251,6 @@ _mul_mat:
 .size _add_mat_w, . - _add_mat_w
 .size _sub_mat_w, . - _sub_mat_w
 .size _mul_mat_w, . - _mul_mat_w
+.size _det_mat_w, . - _det_mat_w
 .section .note.GNU-stack, "", @progbits
 #endif
