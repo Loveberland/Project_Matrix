@@ -132,7 +132,7 @@ int t_det_mat() {
 		mat->data[i] = (i + 1) * 2;
 	print_mat(mat, "matrix 1:\n");
 	int result = det_mat(mat);
-	if (result == 0)
+	if (result != 0)
 		return (-1);
 
 	if (result == NAN)
