@@ -122,6 +122,9 @@ int t_mul_mat() {
 	return status;
 }
 
+int t_det_mat() {
+}
+
 int main(void) {
 	int status = 0;
 	status = t_add_mat();
@@ -136,5 +139,8 @@ int main(void) {
 	if (status)
 		return status;
 
+	status = t_det_mat();
+	if (status)
+		return status;
 	return status;
 }

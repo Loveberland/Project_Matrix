@@ -15,6 +15,24 @@
  *	-1 = dimension mismatch
  */
 
+.section .rodata
+.align 16
+
+.l_abs_mask:
+	.quad 0x7FFFFFFFFFFFFFFF
+	.quad 0x7FFFFFFFFFFFFFFF
+
+.l_neg_mask:
+	.quad 0x8000000000000000
+	.quad 0x8000000000000000
+
+.l_one
+	.double 1.0
+
+/* IEEE-754 quiet NAN */
+.l_nan_val:
+	.quad 0x7FF8000000000000
+
 .section .text
 .globl _add_mat
 .globl _sub_mat
@@ -308,6 +326,215 @@ _mul_mat:
 	ret
 
 _det_mat:
+	pushq %rbx
+	pushq %r12
+	pushq %r13
+	pushq %r14
+	pushq %r15
+	pushq %rbp
+	subq $24, %rsp
+
+	/* %rbx = rows */
+	movq 8(%rdi), %rbx
+	/* %rax = cols */
+	movq 16(%rdi), %rax
+	/* jump if not equal */
+	cmpq %rax, %rbx
+	jne .l_nan
+	/* jump if size = 0 */
+	testq %rbx, %rbx
+	jz .l_nan
+
+	/* keep matrix to %rsp */
+	movq %rdi, 8(%rsp)
+
+	/* allocate space n^2 */
+	movq %rbx, %rdi
+	imulq %rbx, %rdi
+	shlq $3, %rdi
+	call malloc
+	testq %rax, %rax
+	/* if malloc fail return NAN */
+	jz .l_nan
+	/* %r12 = workspace */
+	movq %rax, %r12
+
+	/* copy matrix to workspace */
+	movq %r12, %rdi
+	movq 8(%rsp), %rsi
+	movq (%rsi), %rsi
+	movq %rbx, %rdx
+	imulq %rbx, %rdx
+	shlq $3, %rdx
+	call memcpy
+
+	/* swap_count = 0*/
+	xorq %rbp, %rbp
+	/* k = 0 */
+	xorq %r13, %r13
+
+.l_k_loop:
+	cmpq %rbx, %r13
+	jge .l_k_done
+
+	movq %r13, %r14
+
+	movq %r13, %rax
+	imulq %rbx, %rax
+	addq %r13, %rax
+	movsd (%r12, %rax, 8), %xmm1
+	/* %xmm1 = |A[k][k]| */
+	andpd .l_abs_mask(%rip), %xmm1
+
+	/* i = k + 1 */
+	leaq 1(%r13), %r15
+
+.l_pivot_loop:
+	cmpq %rbx, %r15
+	jge .l_pivot_done
+	movq %r15, %rax
+	imulq %rbx, %rax
+	/* i * n + k */
+	addq %r13, %rax
+	movsd (%r12, %rax, 8), %xmm2
+	/* %xmm2 = |A[i][k]| */
+	andpd .l_abs_mask(%rip), %xmm2
+	ucomisd %xmm1, %xmm2
+	jbe .l_pivot_next
+	movsd %xmm2, %xmm1
+	movq %r15, %r14
+
+.l_pivot_next:
+	incq %r15
+	jmp .l_pivot_loop
+
+.l_pivot_done:
+	xorpd %xmm0, %xmm0
+	ucomisd %xmm0, %xmm1
+	je .l_zero
+
+	cmpq %r13, %r14
+	je .l_no_swap
+	incq %rbp
+
+	movq %r13, %rax
+	imulq %rbx, %rax
+	/* %rax = &A[k][0] */
+	leaq (%r12, %rax, 8), %rax
+
+	movq %r14, %rcx
+	imulq %rbx, %rcx
+	/* %rcx = &A[max_row][0] */
+	leaq (%r12, %rcx, 8), %rcx
+
+	/* j = 0 */
+	xorq %r15, %r15
+
+.l_swap_loop:
+	cmpq %rbx, %r15
+	jge .l_swap_done
+	movsd (%rax, %r15, 8), %xmm0
+	movsd (%rcx, %r15, 8), %xmm2
+	movsd %xmm2, (%rax, %r15, 8)
+	movsd %xmm0, (%rcx, %r15, 8)
+	incq %r15
+	jmp .l_swap_loop
+
+.l_swap_done:
+
+.l_no_swap:
+	movq %r13, %rcx
+	imulq %rbx, %rcx
+	leaq (%r12, %rcx, 8), %rcx
+
+	leaq 1(%r13), %r15
+
+.l_elim_i:
+	cmpq %rbx, %r15
+	jge .l_elim_i_done
+
+	movq %r15, %rax
+	imulq %rbx, %rax
+	leaq (%r12, %rax, 8), %rax
+
+	movsd (%rax, %r13, 8), %xmm3
+	movsd (%rcx, %r13, 8), %xmm4
+	divsd %xmm4, %xmm3
+
+	/* j = k + 1 */
+	leaq 1(%r13), %rdx
+
+.l_elim_j:
+	cmpq %rbx, %rdx
+	jge .l_elim_j_done
+	/* A[k][j] */
+	movsd (%rcx, %rdx, 8), %xmm5
+	/* factor * A[k][j] */
+	mulsd %xmm3, %xmm5
+	/* A[i][j] */
+	movsd (%rax, %rdx, 8), %xmm6
+	/* A[i][j] -= factor * A[k][j] */
+	subsd %xmm5, %xmm6
+	movsd %xmm6, (%rax, %rdx, 8)
+	incq %rdx
+	jmp .l_elim_j
+
+.l_elim_j_done:
+	/* next row i */
+	incq %r15
+	jmp .l_elim_i
+
+.l_elim_i_done:
+	/* k++ */
+	incq %r13
+	jmp .l_k_loop
+
+.l_k_done:
+	movsd .l_one(%rip), %xmm0
+	/* i = 0 */
+	xorq %r13, %r13
+
+.l_diag:
+	cmpq %rbx, %r13
+	jge .l_diag_done
+	movq %r13, %rax
+	imulq %rbx, %rax
+	addq %r13, %rax
+	movsd (%r12, %rax, 8), %xmm1
+	mulsd %xmm1, %xmm0
+	incq %r13
+	jmp .l_diag
+
+.l_diag_done:
+	testq $1, %rbp
+	jz .l_sign_ok
+	xorpd .l_neg_mask(%rip), %xmm0
+
+.l_sign_ok:
+	movsd %xmm0, (%rsp)
+	movq %r12, %rdi
+	call free
+	movsd (%rsp), %xmm0
+	jmp .l_epilogue
+
+.l_zero:
+	movq %r12, %rdi
+	call free
+	xorpd %xmm0, %xmm0
+	jmp .l_epilogue
+
+.l_nan:
+	movsd .l_nan_val(%rip), %xmm0
+
+.l_epilogue:
+	addq $24, %rsp
+	popq %rbp
+	popq %r15
+	popq %r14
+	popq %r13
+	popq %r12
+	popq %rbx
+	ret
 
 _add_mat_w:
 _sub_mat_w:
