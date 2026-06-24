@@ -10,7 +10,7 @@ int det_mat(const Matrix *mat);
 int _add_mat(Matrix *a, const Matrix *b);
 int _sub_mat(Matrix *a, const Matrix *b);
 int _mul_mat(Matrix *a, const Matrix *b);
-double _det_mat(Matrix *a);
+double _det_mat(const Matrix *a);
 int _add_mat_w(Matrix *a, const Matrix *b);
 int _sub_mat_w(Matrix *a, const Matrix *b);
 int _mul_mat_w(Matrix *a, const Matrix *b);

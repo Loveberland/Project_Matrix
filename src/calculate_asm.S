@@ -30,7 +30,7 @@
 	.quad	0x8000000000000000
 
 /* value 1.0 for initialize diagonal product */
-.l_one
+.l_one:
 	.double 1.0
 
 /* IEEE-754 quiet NAN */

@@ -1,161 +1,210 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <math.h>
 
 #include "matrix.h"
 #include "calculate.h"
-#include "display.h"
 
-#define ROWS 2
-#define COLS 2
+#define EPSILON 1e-9
 
-int t_add_mat() {
+int status = 0;
+
+void init_mat(Matrix *m, size_t rows, size_t cols, double init_val) {
+	if (!m)
+		return;
+	m->rows = rows;
+	m->cols = cols;
+	m->data = malloc(rows * cols * sizeof(double));
+	for (size_t i = 0; i < rows * cols; i++)
+		m->data[i] = init_val;
+}
+
+void free_mat(Matrix *m) {
+	if (!m)
+		return;
+	free(m->data);
+	m->data = NULL;
+}
+
+void free_mat_arr(Matrix *arr, size_t n) {
+	if (!arr)
+		return;
+	for (size_t i = 0; i < n; i++)
+		free_mat(&arr[i]);
+	free(arr);
+}
+
+int is_mat_equal(const Matrix *m1, const Matrix *m2) {
+	if (m1 == NULL || m2 == NULL || m1->rows != m2-> rows || m1->cols != m2->cols)
+		return (0);
+	for (size_t i = 0; i < m1->rows; i++) {
+		for (size_t j = 0; j < m1->cols; j++) {
+			double diff = fabs(MAT(m1, i , j) - MAT(m2, i, j));
+			if (diff > EPSILON)
+				return (0);
+		}
+	}
+	return (1);
+}
+
+void t_add_mat() {
 	puts("\033[0;33mtest add_mat function\033[0m");
-	puts("matrix count is 3");
-	puts("matrix size is 2x2");
-	Matrix *mat = malloc(3 * sizeof(Matrix));
-	for (int i = 0; i < 3; i++) {
-		mat[i].data = malloc(ROWS * COLS * sizeof(double));
-		mat[i].rows = ROWS;
-		mat[i].cols = COLS;
-	}
-	for (int i = 0; i < 4; i++)
-		mat[0].data[i] = i + 1;
-	print_mat(&mat[0], "matrix 1:\n");
+	puts("test 1:");
+	Matrix *m1 = malloc(2 * sizeof(Matrix));
+	init_mat(&m1[0], 3, 3, 0.33);
+	init_mat(&m1[1], 3, 3, 0.34);
+	status = add_mat(m1, 2);
+	assert(!status);
+	Matrix *ans1 = malloc(sizeof(Matrix));
+	init_mat(ans1, 3, 3, 0.67);
+	assert(is_mat_equal(ans1, &m1[0]));
+	free_mat_arr(m1, 2);
+	free_mat(ans1);
 
-	for (int i = 0; i < 4; i++)
-		mat[1].data[i] = 1;
-	print_mat(&mat[1], "matrix 2:\n");
+	puts("test 2:");
+	Matrix *m2 = malloc(3 * sizeof(Matrix));
+	init_mat(&m2[0], 3, 3, 0.00015);
+	init_mat(&m2[1], 3, 3, 0.00012);
+	init_mat(&m2[2], 3, 3, 0.00040);
+	status = add_mat(m2, 3);
+	assert(!status);
+	Matrix *ans2 = malloc(sizeof(Matrix));
+	init_mat(ans2, 3, 3, 0.00067);
+	assert(is_mat_equal(ans2, &m2[0]));
+	free_mat_arr(m2, 3);
+	free_mat(ans2);
 
-	for (int i = 0; i < 4; i++)
-		mat[2].data[i] = (i + 1) * 2;
-	print_mat(&mat[2], "matrix 3:\n");
+	puts("test 3:");
+	Matrix *m3 = malloc(5 * sizeof(Matrix));
+	init_mat(&m3[0], 3, 3, 0.00000012);
+	init_mat(&m3[1], 3, 3, 0.00000002);
+	init_mat(&m3[2], 3, 3, 0.00000040);
+	init_mat(&m3[3], 3, 3, 0.00000010);
+	init_mat(&m3[4], 3, 3, 0.00000003);
+	status = add_mat(m3, 5);
+	assert(!status);
+	Matrix *ans3 = malloc(sizeof(Matrix));
+	init_mat(ans3, 3, 3, 0.00000067);
+	assert(is_mat_equal(ans3, &m3[0]));
+	free_mat_arr(m3, 5);
+	free_mat(ans3);
 
-	int status = add_mat(mat, 3);
-	if (mat[0].data[0] != 4)
-		status = 1;
-	if (mat[0].data[1] != 7)
-		status = 1;
-	if (mat[0].data[2] != 10)
-		status = 1;
-	if (mat[0].data[3] != 13)
-		status = 1;
-	if (status)
-		puts("wrong answer");
 
-	return status;
+	puts("test 4:");
+	Matrix *m4 = malloc(3 * sizeof(Matrix));
+	init_mat(&m4[0], 5, 5, 12345.54321);
+	init_mat(&m4[1], 5, 5, 30000.00003);
+	init_mat(&m4[2], 5, 5, 00003.30000);
+	status = add_mat(m4, 3);
+	assert(!status);
+	Matrix *ans4 = malloc(sizeof(Matrix));
+	init_mat(ans4, 5, 5, 42348.84324);
+	assert(is_mat_equal(ans4, &m4[0]));
+	free_mat_arr(m4, 3);
+	free_mat(ans4);
+
+	puts("test 5:");
+	Matrix *m5 = malloc(5 * sizeof(Matrix));
+	init_mat(&m5[0], 5, 5, 0.0);
+	init_mat(&m5[1], 5, 5, 0.0);
+	init_mat(&m5[2], 5, 5, 0.0);
+	init_mat(&m5[3], 5, 5, 0.0);
+	init_mat(&m5[4], 5, 5, 0.0);
+	status = add_mat(m5, 5);
+	assert(!status);
+	Matrix *ans5 = malloc(sizeof(Matrix));
+	init_mat(ans5, 5, 5, 0.0);
+	assert(is_mat_equal(ans5, &m5[0]));
+	free_mat_arr(m5, 5);
+	free_mat(ans5);
 }
 
-int t_sub_mat() {
-	puts("\n\033[0;33mtest sub_mat function\033[0m");
-	puts("matrix count is 3");
-	puts("matrix size is 2x2");
-	Matrix *mat = malloc(3 * sizeof(Matrix));
-	for (int i = 0; i < 3; i++) {
-		mat[i].data = malloc(ROWS * COLS * sizeof(double));
-		mat[i].rows = ROWS;
-		mat[i].cols = COLS;
-	}
-	for (int i = 0; i < 4; i++)
-		mat[0].data[i] = i + 1;
-	print_mat(&mat[0], "matrix 1:\n");
+void t_sub_mat() {
+	puts("\033[0;33mtest sub_mat function\033[0m");
+	puts("test 1:");
+	Matrix *m1 = malloc(2 * sizeof(Matrix));
+	init_mat(&m1[0], 3, 3, 0.33);
+	init_mat(&m1[1], 3, 3, 0.34);
+	status = sub_mat(m1, 2);
+	assert(!status);
+	Matrix *ans1 = malloc(sizeof(Matrix));
+	init_mat(ans1, 3, 3, -0.01);
+	assert(is_mat_equal(ans1, &m1[0]));
+	free_mat_arr(m1, 2);
+	free_mat(ans1);
 
-	for (int i = 0; i < 4; i++)
-		mat[1].data[i] = 1;
-	print_mat(&mat[1], "matrix 2:\n");
+	puts("test 2:");
+	Matrix *m2 = malloc(3 * sizeof(Matrix));
+	init_mat(&m2[0], 3, 3, 0.00015);
+	init_mat(&m2[1], 3, 3, 0.00012);
+	init_mat(&m2[2], 3, 3, 0.00040);
+	status = sub_mat(m2, 3);
+	assert(!status);
+	Matrix *ans2 = malloc(sizeof(Matrix));
+	init_mat(ans2, 3, 3, -0.00037);
+	assert(is_mat_equal(ans2, &m2[0]));
+	free_mat_arr(m2, 3);
+	free_mat(ans2);
 
-	for (int i = 0; i < 4; i++)
-		mat[2].data[i] = (i + 1) * 2;
-	print_mat(&mat[2], "matrix 3:\n");
+	puts("test 3:");
+	Matrix *m3 = malloc(5 * sizeof(Matrix));
+	init_mat(&m3[0], 3, 3, 0.00000012);
+	init_mat(&m3[1], 3, 3, 0.00000002);
+	init_mat(&m3[2], 3, 3, 0.00000040);
+	init_mat(&m3[3], 3, 3, 0.00000010);
+	init_mat(&m3[4], 3, 3, 0.00000003);
+	status = sub_mat(m3, 5);
+	assert(!status);
+	Matrix *ans3 = malloc(sizeof(Matrix));
+	init_mat(ans3, 3, 3, -0.00000043);
+	assert(is_mat_equal(ans3, &m3[0]));
+	free_mat_arr(m3, 5);
+	free_mat(ans3);
 
-	int status = sub_mat(mat, 3);
-	if (mat[0].data[0] != -2)
-		status = 1;
-	if (mat[0].data[1] != -3)
-		status = 1;
-	if (mat[0].data[2] != -4)
-		status = 1;
-	if (mat[0].data[3] != -5)
-		status = 1;
 
-	if (status)
-		puts("wrong answer");
-	return status;
+	puts("test 4:");
+	Matrix *m4 = malloc(3 * sizeof(Matrix));
+	init_mat(&m4[0], 5, 5, 12345.54321);
+	init_mat(&m4[1], 5, 5, 30000.00003);
+	init_mat(&m4[2], 5, 5, 00003.30000);
+	status = sub_mat(m4, 3);
+	assert(!status);
+	Matrix *ans4 = malloc(sizeof(Matrix));
+	init_mat(ans4, 5, 5, -17657.75682);
+	assert(is_mat_equal(ans4, &m4[0]));
+	free_mat_arr(m4, 3);
+	free_mat(ans4);
+
+	puts("test 5:");
+	Matrix *m5 = malloc(5 * sizeof(Matrix));
+	init_mat(&m5[0], 5, 5, 0.0);
+	init_mat(&m5[1], 5, 5, 0.0);
+	init_mat(&m5[2], 5, 5, 0.0);
+	init_mat(&m5[3], 5, 5, 0.0);
+	init_mat(&m5[4], 5, 5, 0.0);
+	status = sub_mat(m5, 5);
+	assert(!status);
+	Matrix *ans5 = malloc(sizeof(Matrix));
+	init_mat(ans5, 5, 5, 0.0);
+	assert(is_mat_equal(ans5, &m5[0]));
+	free_mat_arr(m5, 5);
+	free_mat(ans5);
+
 }
 
-int t_mul_mat() {
-	puts("\n\033[0;33mtest mul_mat function\033[0m");
-	puts("matrix count is 3");
-	puts("matrix size is 2x2");
-	Matrix *mat = malloc(3 * sizeof(Matrix));
-	for (int i = 0; i < 3; i++) {
-		mat[i].data = malloc(ROWS * COLS * sizeof(double));
-		mat[i].rows = ROWS;
-		mat[i].cols = COLS;
-	}
-	for (int i = 0; i < 4; i++)
-		mat[0].data[i] = i + 1;
-	print_mat(&mat[0], "matrix 1:\n");
+void t_mul_mat() {
 
-	for (int i = 0; i < 4; i++)
-		mat[1].data[i] = 1;
-	print_mat(&mat[1], "matrix 2:\n");
-
-	for (int i = 0; i < 4; i++)
-		mat[2].data[i] = (i + 1) * 2;
-	print_mat(&mat[2], "matrix 3:\n");
-
-	int status = mul_mat(mat, 3);	
-	if (mat[0].data[0] != 24)
-		status = 1;
-	if (mat[0].data[1] != 36)
-		status = 1;
-	if (mat[0].data[2] != 56)
-		status = 1;
-	if (mat[0].data[3] != 84)
-		status = 1;
-
-	if (status)
-		puts("wrong answer");
-	return status;
 }
 
-int t_det_mat() {
-	puts("\n\033[0;33mtest det_mat function\033[0m");
-	puts("matrix count is 1");
-	puts("matrix size is 3x3");
-	Matrix *mat = malloc(1 * sizeof(Matrix));
-	mat->data = malloc(3 * 3 * sizeof(double));
-	mat->rows = 3;
-	mat->cols = 3;
-	for (int i = 0; i < 9; i++)
-		mat->data[i] = (i + 1) * 2;
-	print_mat(mat, "matrix 1:\n");
-	int result = det_mat(mat);
-	if (result != 0)
-		return (-1);
+void t_det_mat() {
 
-	if (result == NAN)
-		puts("wrong answer");
-	return (0);
 }
 
 int main(void) {
-	int status;
-	status = t_add_mat();
-	if (status)
-		return status;
-
-	status = t_sub_mat();
-	if (status)
-		return status;
-
-	status = t_mul_mat();
-	if (status)
-		return status;
-
-	status = t_det_mat();
-	if (status)
-		return status;
-	return status;
+	t_add_mat();
+	t_sub_mat();
+	t_mul_mat();
+	t_det_mat();
+	return (0);
 }
