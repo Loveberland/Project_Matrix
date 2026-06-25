@@ -260,13 +260,59 @@ void t_mul_mat() {
 	free_mat(ans5);
 }
 
+double result;
+
 void t_det_mat() {
 	puts("\033[0;33mtest det_mat function\033[0m");
 	puts("test 1:");
+	Matrix *m1 = malloc(sizeof(Matrix));
+	init_mat(m1, 3, 3, 1.1);
+	result = det_mat(m1);
+	if (result == NAN || result != 0.0) {
+		fprintf(stderr, "test 1: failed");
+		abort();
+	}
+	free_mat(m1);
+
 	puts("test 2:");
+	Matrix *m2 = malloc(sizeof(Matrix));
+	init_mat(m2, 2, 2, 100.001);
+	result = det_mat(m2);
+	if (result == NAN || result != 0.0) {
+		fprintf(stderr, "test 2: failed");
+		abort();
+	}
+	free_mat(m2);
+
 	puts("test 3:");
+	Matrix *m3 = malloc(sizeof(Matrix));
+	init_mat(m3, 5, 5, 0.1);
+	result = det_mat(m3);
+	if (result == NAN || result != 0.0) {
+		fprintf(stderr, "test 3: failed");
+		abort();
+	}
+	free_mat(m3);
+
 	puts("test 4:");
+	Matrix *m4 = malloc(sizeof(Matrix));
+	init_mat(m4, 3, 3, -6.7);
+	result = det_mat(m4);
+	if (result == NAN || result != 0.0) {
+		fprintf(stderr, "test 4: failed");
+		abort();
+	}
+	free_mat(m4);
+
 	puts("test 5:");
+	Matrix *m5 = malloc(sizeof(Matrix));
+	init_mat(m5, 3, 3, 6.7);
+	result = det_mat(m5);
+	if (result == NAN || result != 0.0) {
+		fprintf(stderr, "test 5: failed");
+		abort();
+	}
+	free_mat(m5);
 }
 
 int main(void) {
