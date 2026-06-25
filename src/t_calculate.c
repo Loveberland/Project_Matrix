@@ -194,11 +194,79 @@ void t_sub_mat() {
 }
 
 void t_mul_mat() {
+	puts("\033[0;33mtest mul_mat function\033[0m");
+	puts("test 1:");
+	Matrix *m1 = malloc(3 * sizeof(Matrix));
+	init_mat(&m1[0], 3, 3, 9.0);
+	init_mat(&m1[1], 3, 3, 12.0);
+	init_mat(&m1[2], 3, 3, 20.0);
+	status = mul_mat(m1, 3);
+	assert(!status);
+	Matrix *ans1 = malloc(sizeof(Matrix));
+	init_mat(ans1, 3, 3, 0.0);
+	assert(is_mat_equal(ans1, &m1[0]));
+	free_mat_arr(m1, 3);
+	free_mat(ans1);
 
+	puts("test 2:");
+	Matrix *m2 = malloc(2 * sizeof(Matrix));
+	init_mat(&m2[0], 3, 3, 9.0);
+	init_mat(&m2[1], 3, 3, 12.0);
+	status = mul_mat(m2, 2);
+	assert(!status);
+	Matrix *ans2 = malloc(sizeof(Matrix));
+	init_mat(ans2, 3, 3, 0.0);
+	assert(is_mat_equal(ans2, &m2[0]));
+	free_mat_arr(m2, 2);
+	free_mat(ans2);
+
+	puts("test 3:");
+	Matrix *m3 = malloc(sizeof(Matrix));
+	init_mat(&m3[0], 3, 3, 9.0);
+	status = mul_mat(m3, 1);
+	assert(!status);
+	Matrix *ans3 = malloc(sizeof(Matrix));
+	init_mat(ans3, 3, 3, 0.0);
+	assert(is_mat_equal(ans3, &m3[0]));
+	free_mat_arr(m3, 1);
+	free_mat(ans3);
+
+	puts("test 4:");
+	Matrix *m4 = malloc(5 * sizeof(Matrix));
+	init_mat(&m4[0], 2, 2, 0.2);
+	init_mat(&m4[1], 2, 2, 0.2);
+	init_mat(&m4[2], 2, 2, 0.2);
+	init_mat(&m4[3], 2, 2, 0.2);
+	init_mat(&m4[4], 2, 2, 0.2);
+	status = mul_mat(m4, 5);
+	assert(!status);
+	Matrix *ans4 = malloc(sizeof(Matrix));
+	init_mat(ans4, 2, 2, 0.0);
+	assert(is_mat_equal(ans4, &m4[0]));
+	free_mat_arr(m4, 5);
+	free_mat(ans4);
+
+	puts("test 5:");
+	Matrix *m5 = malloc(3 * sizeof(Matrix));
+	init_mat(&m5[0], 3, 3, 1.1);
+	init_mat(&m5[1], 3, 3, 2.2);
+	init_mat(&m5[2], 3, 3, 3.3);
+	status = mul_mat(m1, 3);
+	assert(!status);
+	Matrix *ans5 = malloc(sizeof(Matrix));
+	init_mat(ans5, 3, 3, 0.0);
+	assert(is_mat_equal(ans5, &m5[0]));
+	free_mat_arr(m5, 3);
+	free_mat(ans5);
 }
 
 void t_det_mat() {
-
+	puts("\033[0;33mtest det_mat function\033[0m");
+	puts("test 1:");
+	puts("test 2:");
+	puts("test 3:");
+	puts("test 4:");
+	puts("test 5:");
 }
 
 int main(void) {
