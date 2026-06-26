@@ -50,7 +50,7 @@ int mul_mat(Matrix *mat, const int n) {
 	return status;
 }
 
-int det_mat(const Matrix *mat) {
+double det_mat(const Matrix *mat) {
 	double result;
 	#ifdef _WIN32
 		result = _det_mat_w(mat);
