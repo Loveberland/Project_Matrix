@@ -48,6 +48,15 @@ int is_mat_equal(const Matrix *m1, const Matrix *m2) {
 	return (1);
 }
 
+int is_double_equal(const double n1, const double n2) {
+	if (n1 == NAN || n2 == NAN)
+		return (0);
+	double diff = fabs(n1 - n2);
+	if (diff > EPSILON)
+		return (0);
+	return (1);
+}
+
 void t_add_mat() {
 	puts("\033[0;33mtest add_mat function\033[0m");
 	puts("test 1:");
@@ -266,9 +275,13 @@ void t_det_mat() {
 	puts("\033[0;33mtest det_mat function\033[0m");
 	puts("test 1:");
 	Matrix *m1 = malloc(sizeof(Matrix));
-	init_mat(m1, 3, 3, 1.1);
+	init_mat(m1, 2, 2, 0.0);
+	m1->data[0] = 6.7;
+	m1->data[1] = 67;
+	m1->data[2] = 670;
+	m1->data[3] = -67;
 	result = det_mat(m1);
-	if (result == NAN || result != 0.0) {
+	if (result == NAN || !is_double_equal(result, -45338.9)) {
 		fprintf(stderr, "test 1: failed");
 		abort();
 	}
@@ -276,9 +289,13 @@ void t_det_mat() {
 
 	puts("test 2:");
 	Matrix *m2 = malloc(sizeof(Matrix));
-	init_mat(m2, 2, 2, 100.001);
+	init_mat(m2, 2, 2, 0.0);
+	m2->data[0] = 2;
+	m2->data[1] = 4;
+	m2->data[2] = 6;
+	m2->data[3] = 8;
 	result = det_mat(m2);
-	if (result == NAN || result != 0.0) {
+	if (result == NAN || !is_double_equal(result, -8)) {
 		fprintf(stderr, "test 2: failed");
 		abort();
 	}
@@ -286,9 +303,15 @@ void t_det_mat() {
 
 	puts("test 3:");
 	Matrix *m3 = malloc(sizeof(Matrix));
-	init_mat(m3, 5, 5, 0.1);
+	init_mat(m3, 4, 4, 0.0);
+	m3->data[0] = 6.7;
+	m3->data[2] = -7.6;
+	m3->data[5] = -6.7;
+	m3->data[10] = 7.6;
+	m3->data[12] = 0.67;
+	m3->data[15] = 1.0;
 	result = det_mat(m3);
-	if (result == NAN || result != 0.0) {
+	if (result == NAN || !is_double_equal(result, -341.164)) {
 		fprintf(stderr, "test 3: failed");
 		abort();
 	}
@@ -296,9 +319,13 @@ void t_det_mat() {
 
 	puts("test 4:");
 	Matrix *m4 = malloc(sizeof(Matrix));
-	init_mat(m4, 3, 3, -6.7);
+	init_mat(m4, 3, 3, 3.3);
+	m4->data[2] = 1.0;
+	m4->data[4] = 1.0;
+	m4->data[6] = 1.0;
+	m4->data[8] = 1.0;
 	result = det_mat(m4);
-	if (result == NAN || result != 0.0) {
+	if (result == NAN || !is_double_equal(result, -22.747)) {
 		fprintf(stderr, "test 4: failed");
 		abort();
 	}
@@ -306,9 +333,18 @@ void t_det_mat() {
 
 	puts("test 5:");
 	Matrix *m5 = malloc(sizeof(Matrix));
-	init_mat(m5, 3, 3, 6.7);
+	init_mat(m5, 3, 3, 0.0);
+	m5->data[0] = 2;
+	m5->data[1] = 0.1;
+	m5->data[2] = 45;
+	m5->data[3] = 4;
+	m5->data[4] = 67;
+	m5->data[5] = 11;
+	m5->data[6] = 6;
+	m5->data[7] = 23;
+	m5->data[8] = 22;
 	result = det_mat(m5);
-	if (result == NAN || result != 0.0) {
+	if (result == NAN || !is_double_equal(result, -11510.2)) {
 		fprintf(stderr, "test 5: failed");
 		abort();
 	}
