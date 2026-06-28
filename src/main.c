@@ -42,6 +42,11 @@ int main(void) {
 		int det_status = det_mat(mat);
 		if (det_status == NAN)
 			puts("something went wrong, can't find determinant");
+	} else if (c == 4) {
+		puts("coming soon...");
+	} else if (c == 5) {
+		puts("coming soon...");
+	} else if (c == 6) {	
 	} else
 		puts("something went wrong");
 	for (int i = 0; i < n; i++)

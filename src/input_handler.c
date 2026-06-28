@@ -1,159 +1,196 @@
+#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <errno.h>
+#include <limits.h>
+#include <ctype.h>
 
+#include "matrix.h"
 #include "input_handler.h"
 
-static void out(const char *s, size_t len) {
-	write(STDOUT_FILENO, s, len);
-}
-
-#define OUTS(lit) out((lit), sizeof(lit) - 1)
-
-static size_t parse_uint(const char *s, size_t len) {
-	size_t n = 0;
-	for (size_t i = 0; i < len; i++) {
-		n = n * 10 + (size_t) (s[i] - '0');
+/*
+ * Gets a number from the user.
+ * Returns 0 on success, -1 on failure.
+ */
+int get_num(const char *prompt, int *out) {
+	/*
+	 * Get a line of input from the user.
+	 */
+	fprintf(stdout, "%s", prompt);
+	char line[16];
+	if (fgets(line, sizeof(line), stdin) == NULL) {
+		fprintf(stderr, "Error: Failed to read input.\n");
+		return (-1);
 	}
-	return n;
-}
 
-static double parse_double(const char *s, size_t len) {
-	double n = 0.0;
-	double frac = 0.1;
-	int in_frac = 0;
-	for (size_t i = 0; i < len; i++) {
-		if (s[i] == ','){
-			in_frac	 = 1;
-			continue;
-		}
-		int d = s[i] - '0';
-		if (in_frac) {
-			n += d * frac;
-			frac *= 0.1;
-		} else {
-			n = n * 10.0 + d;
-		}
+	/*
+	 * Check if the input is a valid integer.
+	 */
+	const char *p = line;
+	if (*p == '-' || *p == '+') {
+		p++;
 	}
-	return n;
-}
-
-static int valid_uint(const char *s, size_t len) {
-	if (len == 0)
-		return 0;
-	for (size_t i = 0; i < len; i++)
-		if (s[i] < '0' || s[i] > '9')
-			return 0;
-	return 1;
-}
-
-static int valid_double(const char *s, size_t len) {
-	if (len == 0)
-		return 0;
-	int dot_seen = 0;
-	for (size_t i = 0; i < len; i++) {
-		if (s[i] == '.' && !dot_seen) {
-			dot_seen = 1;
-			continue;
-		}
-		if (s[i] < '0' || s[i] > '9')
-			return 0;
+	if (*p == '\0' || *p == '\n') {
+		fprintf(stderr, "Error: Invalid input. Please enter number.\n");
+		return (-1);
 	}
-	return 1;
-}
-
-#define BUF_SIZ 32
-static char buf[BUF_SIZ];
-
-static size_t read_line(const char *prompt, size_t prompt_len) {
-	out(prompt, prompt_len);
-	ssize_t n = read(STDIN_FILENO, buf, BUF_SIZ - 1);
-	if (n <= 0)
-		return 0;
-	if (buf[n - 1] == '\n')
-		n--;
-	buf[n] = '\0';
-	return (size_t) n;
-}
-
-static size_t get_number(const char *prompt, size_t prompt_len) {
-	while (1) {
-		size_t len = read_line(prompt, prompt_len);
-		if (valid_uint(buf, len))
-			return parse_uint(buf, len);
-		OUTS("only number\n");
-	}
-}
-
-static double get_number_double(const char *prompt, size_t prompt_len) {
-	while (1) {
-		size_t len = read_line(prompt, prompt_len);
-		if (valid_double(buf, len))
-			return parse_double(buf, len);
-		OUTS("only number\n");	
-	}
-}
-
-size_t get_mat_cnt() {
-#define P1 "how many count of matrix: "
-	return get_number(P1, sizeof(P1) - 1);
-}
-
-size_t get_rows() {
-#define P2 "enter rows of matrix: "
-	return get_number(P2, sizeof(P2) - 1);
-}
-
-size_t get_cols() {
-#define P3 "enter columns of matrix: "
-	return get_number(P3, sizeof(P3) - 1);
-}
-
-Matrix *get_mat(int cnt) {
-	char hdr[BUF_SIZ];
-	int hlen = 0;
-	hdr[hlen++] = '\n';
-	memcpy(hdr + hlen, "Matrix ", 7); hlen += 7;
-	char tmp[16]; int tlen = 0;
-	int v = cnt;
-	if (v == 0)
-		tmp[tlen++] = '0';
-	else {
-		while (v) {
-			tmp[tlen++] = '0' + v % 10;
-			v /= 10;
+	for (; *p != '\0' && *p != '\n'; p++) {
+		if (!isdigit((unsigned char)*p)) {
+			fprintf(stderr, "Error: Invalid input. Please enter number.\n");
+			return (-1);
 		}
 	}
-	for (int i = tlen - 1; i >= 0; i--)
-		hdr[hlen++] = tmp[i];
-	hdr[hlen++] = ':'; hdr[hlen++] = '\n';
-	out(hdr, (size_t) hlen);
 
-	size_t rows = get_rows();
-	size_t cols = get_cols();
+	/*
+	 * Convert the string to a long integer and check for errors.
+	 */
+	char *end;
+	errno = 0;
+	long val = strtol(line, &end, 10);
+
+	if (errno == ERANGE || val < INT_MIN || val > INT_MAX) {
+		fprintf(stderr, "Error: Input out of range.\n");
+		return (-1);
+	}
+
+	/*
+	 * Assign the converted value to the output pointer.
+	 */
+	*out = (int)val;
+	return (0);
+}
+
+/*
+ * Gets the number of matrices the user wants to create.
+ * Returns the count on success, recall until valid input is received.
+ */
+int get_mat_cnt() {
+	int cnt;
+	if (get_num("\nHow many matrices do you want to create?: ", &cnt) == -1) {
+		fprintf(stderr, "Error: Failed to get matrix count.\n");
+		return get_mat_cnt(); // Retry on failure
+	}
+	if (cnt <= 0) {
+		fprintf(stderr, "Error: Matrix count must be a positive number.\n");
+		return get_mat_cnt(); // Retry on failure
+	}
+	return cnt;
+}
+
+/*
+ * Gets the number of rows for a specific matrix.
+ * Returns the count on success, recall until valid input is received.
+ */
+int get_rows(int cnt) {
+	int rows;
+	char prompt[64];
+	snprintf(prompt, sizeof(prompt), "\nHow many rows of matrix %d do you want to create?: ", cnt);
+	if (get_num(prompt, &rows) == -1) {
+		fprintf(stderr, "Error: Failed to get number of rows.\n");
+		return get_rows(cnt); // Retry on failure
+	}
+	if (rows <= 0) {
+		fprintf(stderr, "Error: Number of rows must be a positive number.\n");
+		return get_rows(cnt); // Retry on failure
+	}
+	return rows;
+}
+
+/*
+ * Gets the number of columns for a specific matrix.
+ * Returns the count on success, recall until valid input is received.
+ */
+int get_cols(int cnt) {
+	int cols;
+	char prompt[64];
+	snprintf(prompt, sizeof(prompt), "\nHow many columns of matrix %d do you want to create?: ", cnt);
+	if (get_num(prompt, &cols) == -1) {
+		fprintf(stderr, "Error: Failed to get number of columns.\n");
+		return get_cols(cnt); // Retry on failure
+	}
+	if (cols <= 0) {
+		fprintf(stderr, "Error: Number of columns must be a positive number.\n");
+		return get_cols(cnt); // Retry on failure
+	}
+	return cols;
+}
+
+/*
+ * Parses a string into a double.
+ * Returns 0 on success, -1 on failure.
+ */
+int parse_num(const char *s, double *out) {
+	/*
+	 * Check if the string is valid.
+	 */
+	if (!s || *s == '\0' || *s == '\n') {
+		return (-1);
+	}
+
+	/*
+	 * Convert the string to a double and check for errors.
+	 */
+	char *end;
+	errno = 0;
+	double val = strtod(s, &end);
+	
+	/*
+	 * Check for conversion errors.
+	 */
+	if (end == s || (*end != '\0' && *end != '\n')) {
+		return (-1);
+	}
+	if (errno == ERANGE) {
+		return (-1);
+	}
+
+	/*
+	 * Assign the converted value to the output pointer.
+	 */
+	*out = val;
+	return (0);
+}
+
+/*
+ * Gets a matrix from the user.
+ * Returns a pointer to the allocated matrix on success, NULL on failure.
+ */
+Matrix* get_mat(int cnt) {
+	int rows = get_rows(cnt);
+	int cols = get_cols(cnt);
 	Matrix *mat = malloc(sizeof(Matrix));
+	if (mat == NULL) {
+		fprintf(stderr, "Error: Memory allocation failed for matrix %d.\n", cnt);
+		exit(EXIT_FAILURE);
+	}
 	mat->rows = rows;
 	mat->cols = cols;
 	mat->data = malloc(rows * cols * sizeof(double));
+	if (mat->data == NULL) {
+		fprintf(stderr, "Error: Memory allocation failed for matrix data %d.\n", cnt);
+		free(mat);
+		exit(EXIT_FAILURE);
+	}
 
-	char prompt[BUF_SIZ];
-	for (size_t i = 0; i < rows * cols; i++) {
-		int plen = 0;
-		prompt[plen++] = '[';
-		tlen = 0;
-		size_t vi = i;
-		if (vi == 0)
-			tmp[tlen++] = '0';
-		else {
-			while (vi) {
-				tmp[tlen++] = '0' + vi % 10;
-				vi /= 10;
+	for (int i = 0; i < rows * cols; i++) {
+		char buf[64];
+		double val;
+		
+		while (1) {
+			fprintf(stdout, "\n[%d]: ", i + 1);
+			if (fgets(buf, sizeof(buf), stdin) == NULL) {
+				fprintf(stderr, "Error: Failed to read input\n");
+				continue; // Retry on failure
 			}
+			
+			if (parse_num(buf, &val) == -1) {
+				fprintf(stderr, "Error: Invalid input. Please enter a valid number.\n");
+				continue; // Retry on failure
+			}
+
+			break;
 		}
-		for (int j = tlen - 1; j >= 0; j--)
-			prompt[plen++] = tmp[j];
-		prompt[plen++] = ']'; prompt[plen++] = ':'; prompt[plen++] = ' ';
-		mat->data[i] = get_number_double(prompt, (size_t) plen);
+
+		mat->data[i] = val;
 	}
 	return mat;
 }

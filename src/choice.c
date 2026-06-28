@@ -41,8 +41,8 @@ int calculate_choice() {
 	#endif
 
 	int choice = 0;
-	const char *options[] = {"addition", "subtraction", "multiplication", "determinant"};
-	const int len = 4;
+	const char *options[] = {"addition", "subtraction", "multiplication", "determinant", "transpose", "inverse", "exit"};
+	const int len = 7;
 
 	while (1) {
 		fputs("\033[H\033[J", stdout);
