@@ -9,8 +9,8 @@
 #define CNT_ANS 2
 
 int t_get_mat_cnt() {
-	puts("\033[0;33mtest get_mat_cnt function\033[0m");
-	fputs("you need to enter 2\n", stdout);
+	puts("\033[0;33m--- Test get_mat_cnt function ---\033[0m");
+	fputs("You need to enter: 2\n", stdout);
 	size_t s = get_mat_cnt();
 	fprintf(stdout, "get_matrix_cnt(): %zu\n", s);
 	if (CNT_ANS != s)
@@ -19,22 +19,22 @@ int t_get_mat_cnt() {
 }
 
 int t_get_mat() {
-	puts("\n\033[0;33mtest_get_mat function\033[0m");
+	puts("\n\033[0;33m--- Test_get_mat function ---\033[0m");
 	int status = 0;
-	fputs("\nmatrix size is 3x3\n", stdout);
-	fputs("you need to enter 1 - 9\n", stdout); 
+	fputs("\nMatrix size is: 3x3\n", stdout);
+	fputs("You need to enter: 1 - 9\n", stdout); 
 	Matrix *mat = get_mat(1);
 	if (mat->rows != ROWS) {
-		fputs("result: rows not equal\n", stdout);
+		fputs("Result: Rows not equal\n", stdout);
 		status = 1;
 	}
 	if (mat->cols != COLS) {
-		fputs("result: columns not equal\n", stdout);
+		fputs("Result: Columns not equal\n", stdout);
 		status = 1;
 	}
 	for (int i = 0; i < 9; i++) {
 		if (mat->data[i] != i + 1) {
-			fputs("result: data not equal\n", stdout);
+			fputs("Result: Data not equal\n", stdout);
 			status = 1;
 			break;
 		}

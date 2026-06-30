@@ -12,5 +12,5 @@ void print_mat(const Matrix *m, const char *s) {
 }
 
 void print_det(const double result) {
-	fprintf(stdout, "result is: %8.8f\n", result);
+	fprintf(stdout, "Result: %8.8f\n", result);
 }

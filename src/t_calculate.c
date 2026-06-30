@@ -66,8 +66,8 @@ int is_double_equal(const double n1, const double n2) {
 }
 
 void t_add_mat() {
-	puts("\033[0;33mtest add_mat function\033[0m");
-	puts("test 1:");
+	puts("\033[0;33m--- Test add_mat function ---\033[0m");
+	puts("Test 1:");
 	Matrix *m1 = malloc(2 * sizeof(Matrix));
 	init_mat(&m1[0], 3, 3, 0.33);
 	init_mat(&m1[1], 3, 3, 0.34);
@@ -79,7 +79,7 @@ void t_add_mat() {
 	free_mat_arr(m1, 2);
 	free_mat(ans1);
 
-	puts("test 2:");
+	puts("Test 2:");
 	Matrix *m2 = malloc(3 * sizeof(Matrix));
 	init_mat(&m2[0], 3, 3, 0.00015);
 	init_mat(&m2[1], 3, 3, 0.00012);
@@ -92,7 +92,7 @@ void t_add_mat() {
 	free_mat_arr(m2, 3);
 	free_mat(ans2);
 
-	puts("test 3:");
+	puts("Test 3:");
 	Matrix *m3 = malloc(5 * sizeof(Matrix));
 	init_mat(&m3[0], 3, 3, 0.00000012);
 	init_mat(&m3[1], 3, 3, 0.00000002);
@@ -108,7 +108,7 @@ void t_add_mat() {
 	free_mat(ans3);
 
 
-	puts("test 4:");
+	puts("Test 4:");
 	Matrix *m4 = malloc(3 * sizeof(Matrix));
 	init_mat(&m4[0], 5, 5, 12345.54321);
 	init_mat(&m4[1], 5, 5, 30000.00003);
@@ -121,7 +121,7 @@ void t_add_mat() {
 	free_mat_arr(m4, 3);
 	free_mat(ans4);
 
-	puts("test 5:");
+	puts("Test 5:");
 	Matrix *m5 = malloc(5 * sizeof(Matrix));
 	init_mat(&m5[0], 5, 5, 0.0);
 	init_mat(&m5[1], 5, 5, 0.0);
@@ -138,8 +138,8 @@ void t_add_mat() {
 }
 
 void t_sub_mat() {
-	puts("\033[0;33mtest sub_mat function\033[0m");
-	puts("test 1:");
+	puts("\033[0;33m--- test sub_mat function ---\033[0m");
+	puts("Test 1:");
 	Matrix *m1 = malloc(2 * sizeof(Matrix));
 	init_mat(&m1[0], 3, 3, 0.33);
 	init_mat(&m1[1], 3, 3, 0.34);
@@ -151,7 +151,7 @@ void t_sub_mat() {
 	free_mat_arr(m1, 2);
 	free_mat(ans1);
 
-	puts("test 2:");
+	puts("Test 2:");
 	Matrix *m2 = malloc(3 * sizeof(Matrix));
 	init_mat(&m2[0], 3, 3, 0.00015);
 	init_mat(&m2[1], 3, 3, 0.00012);
@@ -164,7 +164,7 @@ void t_sub_mat() {
 	free_mat_arr(m2, 3);
 	free_mat(ans2);
 
-	puts("test 3:");
+	puts("Test 3:");
 	Matrix *m3 = malloc(5 * sizeof(Matrix));
 	init_mat(&m3[0], 3, 3, 0.00000012);
 	init_mat(&m3[1], 3, 3, 0.00000002);
@@ -180,7 +180,7 @@ void t_sub_mat() {
 	free_mat(ans3);
 
 
-	puts("test 4:");
+	puts("Test 4:");
 	Matrix *m4 = malloc(3 * sizeof(Matrix));
 	init_mat(&m4[0], 5, 5, 12345.54321);
 	init_mat(&m4[1], 5, 5, 30000.00003);
@@ -193,7 +193,7 @@ void t_sub_mat() {
 	free_mat_arr(m4, 3);
 	free_mat(ans4);
 
-	puts("test 5:");
+	puts("Test 5:");
 	Matrix *m5 = malloc(5 * sizeof(Matrix));
 	init_mat(&m5[0], 5, 5, 0.0);
 	init_mat(&m5[1], 5, 5, 0.0);
@@ -211,8 +211,8 @@ void t_sub_mat() {
 }
 
 void t_mul_mat() {
-	puts("\033[0;33mtest mul_mat function\033[0m");
-	puts("test 1:");
+	puts("\033[0;33m--- Test mul_mat function ---\033[0m");
+	puts("Test 1:");
 	Matrix *m1 = malloc(3 * sizeof(Matrix));
 	init_mat(&m1[0], 3, 3, 9.0);
 	init_mat(&m1[1], 3, 3, 12.0);
@@ -225,7 +225,7 @@ void t_mul_mat() {
 	free_mat_arr(m1, 3);
 	free_mat(ans1);
 
-	puts("test 2:");
+	puts("Test 2:");
 	Matrix *m2 = malloc(2 * sizeof(Matrix));
 	init_mat(&m2[0], 3, 3, 9.0);
 	init_mat(&m2[1], 3, 3, 12.0);
@@ -237,7 +237,7 @@ void t_mul_mat() {
 	free_mat_arr(m2, 2);
 	free_mat(ans2);
 
-	puts("test 3:");
+	puts("Test 3:");
 	Matrix *m3 = malloc(sizeof(Matrix));
 	init_mat(&m3[0], 3, 3, 9.0);
 	status = mul_mat(m3, 1);
@@ -248,7 +248,7 @@ void t_mul_mat() {
 	free_mat_arr(m3, 1);
 	free_mat(ans3);
 
-	puts("test 4:");
+	puts("Test 4:");
 	Matrix *m4 = malloc(5 * sizeof(Matrix));
 	init_mat(&m4[0], 2, 2, 0.2);
 	init_mat(&m4[1], 2, 2, 0.2);
@@ -263,7 +263,7 @@ void t_mul_mat() {
 	free_mat_arr(m4, 5);
 	free_mat(ans4);
 
-	puts("test 5:");
+	puts("Test 5:");
 	Matrix *m5 = malloc(3 * sizeof(Matrix));
 	init_mat(&m5[0], 3, 2, 1.1);
 	init_mat(&m5[1], 2, 3, 2.2);
@@ -281,8 +281,8 @@ double result;
 
 void t_det_mat() {
 	double answer = NAN;
-	puts("\033[0;33mtest det_mat function\033[0m");
-	puts("test 1:");
+	puts("\033[0;33m--- Test det_mat function ---\033[0m");
+	puts("Test 1:");
 	Matrix *m1 = malloc(sizeof(Matrix));
 	init_mat(m1, 2, 2, 0.0);
 	m1->data[0] = 6.7;
@@ -291,12 +291,12 @@ void t_det_mat() {
 	m1->data[3] = -67;
 	result = det_mat(m1, &answer);
 	if (result == NAN || !is_double_equal(answer, -45338.9)) {
-		fprintf(stderr, "test 1: failed");
+		fprintf(stderr, "Test 1: Failed");
 		abort();
 	}
 	free_mat(m1);
 
-	puts("test 2:");
+	puts("Test 2:");
 	Matrix *m2 = malloc(sizeof(Matrix));
 	init_mat(m2, 2, 2, 0.0);
 	m2->data[0] = 2;
@@ -305,12 +305,12 @@ void t_det_mat() {
 	m2->data[3] = 8;
 	result = det_mat(m2, &answer);
 	if (result == NAN || !is_double_equal(answer, -8)) {
-		fprintf(stderr, "test 2: failed");
+		fprintf(stderr, "Test 2: Failed");
 		abort();
 	}
 	free_mat(m2);
 
-	puts("test 3:");
+	puts("Test 3:");
 	Matrix *m3 = malloc(sizeof(Matrix));
 	init_mat(m3, 4, 4, 0.0);
 	m3->data[0] = 6.7;
@@ -321,12 +321,12 @@ void t_det_mat() {
 	m3->data[15] = 1.0;
 	result = det_mat(m3, &answer);
 	if (result == NAN || !is_double_equal(answer, -341.164)) {
-		fprintf(stderr, "test 3: failed");
+		fprintf(stderr, "Test 3: Failed");
 		abort();
 	}
 	free_mat(m3);
 
-	puts("test 4:");
+	puts("Test 4:");
 	Matrix *m4 = malloc(sizeof(Matrix));
 	init_mat(m4, 3, 3, 3.3);
 	m4->data[2] = 1.0;
@@ -335,12 +335,12 @@ void t_det_mat() {
 	m4->data[8] = 1.0;
 	result = det_mat(m4, &answer);
 	if (result == NAN || !is_double_equal(answer, -22.747)) {
-		fprintf(stderr, "test 4: failed");
+		fprintf(stderr, "Test 4: Failed");
 		abort();
 	}
 	free_mat(m4);
 
-	puts("test 5:");
+	puts("Test 5:");
 	Matrix *m5 = malloc(sizeof(Matrix));
 	init_mat(m5, 3, 3, 0.0);
 	m5->data[0] = 2;
@@ -354,7 +354,7 @@ void t_det_mat() {
 	m5->data[8] = 22;
 	result = det_mat(m5, &answer);
 	if (result == NAN || !is_double_equal(answer, -11510.2)) {
-		fprintf(stderr, "test 5: failed");
+		fprintf(stderr, "Test 5: Failed");
 		abort();
 	}
 	free_mat(m5);

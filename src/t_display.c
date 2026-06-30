@@ -8,7 +8,7 @@
 #define COLS 5
 
 int main(void) {
-	puts("\033[0;33mtest print_mat function\033[0m");
+	puts("\033[0;33m--- Test print_mat function ---\033[0m");
 	Matrix *mat = malloc(sizeof(Matrix));
 	mat->data = malloc(ROWS * COLS * sizeof(double));
 	mat->rows = ROWS;
@@ -16,7 +16,7 @@ int main(void) {
 	for (int i = 0; i < ROWS; i++)
 		for (int j = 0; j < COLS; j++)
 			mat->data[i * COLS + j] = i * COLS + j;
-	print_mat(mat, "result is:\n");
+	print_mat(mat, "Result: \n");
 
 	return (0);
 }

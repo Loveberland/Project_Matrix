@@ -41,7 +41,7 @@ int calculate_choice() {
 	#endif
 
 	int choice = 0;
-	const char *options[] = {"addition", "subtraction", "multiplication", "determinant", "transpose", "inverse", "exit"};
+	const char *options[] = {"Addition", "Subtraction", "Multiplication", "Determinant", "Transpose", "Inverse", "Exit"};
 	const int len = 7;
 
 	while (1) {
@@ -117,7 +117,7 @@ int output_choice() {
 	#endif
 
 	int choice = 0;
-	const char *options[] = {"console", "file", "exit"};
+	const char *options[] = {"Console", "File", "Exit"};
 	const int len = 3;
 
 	while (1) {

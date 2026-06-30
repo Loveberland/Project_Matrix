@@ -9,15 +9,16 @@
 #include "choice.h"
 
 void greedy() {
-	fprintf(stdout, "--- welcome to matrix calculator ---\n");
+	fprintf(stdout, "--- Welcome to matrix calculator ---\n");
 }
 
 void bye() {
-	fprintf(stdout, "--- exit program ---\n");
+	fprintf(stdout, "--- Exit program ---\n");
 }
 
 int main(void) {
 	greedy();
+
 	int n = get_mat_cnt();	
 	Matrix *mat = malloc(n * sizeof(Matrix));
 	for (int i = 0; i < n; i++) {
@@ -29,28 +30,28 @@ int main(void) {
 	double det_answer = NAN;
 	if (c == 0) {
 		if (add_mat(mat, n)) {
-			fprintf(stderr, "something went wrong, can't addition matrix\n");
+			fprintf(stderr, "Something went wrong, can't addition matrix.\n");
 		}
 	}else if (c == 1) {
 		if (sub_mat(mat, n)) {
-			fprintf(stderr, "something went wrong, can't subtraction matrix\n");
+			fprintf(stderr, "Something went wrong, can't subtraction matrix.\n");
 		}
 	}else if (c == 2) {
 		if (mul_mat(mat, n)) {
-			fprintf(stderr, "something went wrong, can't multiplication matrix\n");
+			fprintf(stderr, "Something went wrong, can't multiplication matrix.\n");
 		}
 	} else if (c == 3) {
 		if (det_mat(mat, &det_answer) == NAN) {
-			fprintf(stderr, "something went wrong, can't find determinant\n");
+			fprintf(stderr, "Something went wrong, can't find determinant.\n");
 		}
 	} else if (c == 4) {
-		puts("coming soon...");
+		puts("Coming soon...");
 	} else if (c == 5) {
-		puts("coming soon...");
+		puts("Coming soon...");
 	} else if (c == 6) {
 		// Do nothing...
 	} else {
-		fprintf(stderr, "something went wrong\n");
+		fprintf(stderr, "Something went wrong.\n");
 	}
 
 	c = output_choice();
@@ -58,18 +59,20 @@ int main(void) {
 		if (!isnan(det_answer)) {
 			print_det(det_answer);
 		} else {
-			print_mat(&mat[0], "result: \n");
+			print_mat(&mat[0], "Result: \n");
 		}
 	} else if (c == 1) {
-		puts("coming soon...");
+		puts("Coming soon...");
 	} else if (c == 2) {
 		// Do nothing...
 	} else {
-		fprintf(stderr, "something went wrong\n");
-	}	
+		fprintf(stderr, "Something went wrong.\n");
+	}
+
 	for (int i = 0; i < n; i++) {
 		free(mat[i].data);
 	}
 	free(mat);
+
 	bye();
 }
