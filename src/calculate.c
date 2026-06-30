@@ -13,8 +13,9 @@ int add_mat(Matrix *mat, const int n) {
 		#else
 			status = _add_mat(&mat[0], &mat[i]);	
 		#endif
-		if (status)
+		if (status) {
 			return status;
+		}
 	}
 	return status;
 }
@@ -27,8 +28,9 @@ int sub_mat(Matrix *mat, const int n) {
 		#else
 			status = _sub_mat(&mat[0], &mat[i]);	
 		#endif
-		if (status)
+		if (status) {
 			return status;
+		}
 	}
 	return status;
 }
@@ -41,8 +43,9 @@ int mul_mat(Matrix *mat, const int n) {
 		#else
 			status = _mul_mat(&mat[0], &mat[i]);	
 		#endif
-		if (status)
+		if (status) {
 			return status;
+		}
 	}
 	return status;
 }
@@ -53,7 +56,19 @@ int det_mat(const Matrix *mat, double *answer) {
 	#else
 		*answer = _det_mat(mat);
 	#endif
-	if (*answer == NAN)
+	if (*answer == NAN) {
 		return (NAN);
+	}
 	return (0);
+}
+
+int trans_mat(Matrix *mat) {
+	int status = 0;
+	#ifdef _WIN32
+		status = _trans_mat_w(mat);
+	#else
+		status = _trans_mat(mat);
+	#endif
+
+	return status;
 }
