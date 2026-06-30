@@ -16,7 +16,6 @@ int add_mat(Matrix *mat, const int n) {
 		if (status)
 			return status;
 	}
-	print_mat(&mat[0], "result is:\n");
 	return status;
 }
 
@@ -31,7 +30,6 @@ int sub_mat(Matrix *mat, const int n) {
 		if (status)
 			return status;
 	}
-	print_mat(&mat[0], "result is:\n");
 	return status;
 }
 
@@ -46,19 +44,16 @@ int mul_mat(Matrix *mat, const int n) {
 		if (status)
 			return status;
 	}
-	print_mat(&mat[0], "result is:\n");
 	return status;
 }
 
-double det_mat(const Matrix *mat) {
-	double result;
+int det_mat(const Matrix *mat, double *answer) {
 	#ifdef _WIN32
-		result = _det_mat_w(mat);
+		*answer = _det_mat_w(mat);
 	#else
-		result = _det_mat(mat);
+		*answer = _det_mat(mat);
 	#endif
-	if (result == NAN)
+	if (*answer == NAN)
 		return (NAN);
-	print_det(result);
-	return result;
+	return (0);
 }

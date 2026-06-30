@@ -26,31 +26,50 @@ int main(void) {
 		free(tmp);	
 	}
 	int c = calculate_choice();
+	double det_answer = NAN;
 	if (c == 0) {
-		int add_status = add_mat(mat, n);	
-		if (add_status)
-			puts("something went wrong, can't addition matrix");
-	} else if (c == 1) {
-		int sub_status = sub_mat(mat, n);
-		if (sub_status)
-			puts("something went wrong, can't subtraction matrix");
-	} else if (c == 2) {
-		int mul_status = mul_mat(mat, n);
-		if (mul_status)
-			puts("something went wrong, can't multiplication matrix");
+		if (add_mat(mat, n)) {
+			fprintf(stderr, "something went wrong, can't addition matrix\n");
+		}
+	}else if (c == 1) {
+		if (sub_mat(mat, n)) {
+			fprintf(stderr, "something went wrong, can't subtraction matrix\n");
+		}
+	}else if (c == 2) {
+		if (mul_mat(mat, n)) {
+			fprintf(stderr, "something went wrong, can't multiplication matrix\n");
+		}
 	} else if (c == 3) {
-		int det_status = det_mat(mat);
-		if (det_status == NAN)
-			puts("something went wrong, can't find determinant");
+		if (det_mat(mat, &det_answer) == NAN) {
+			fprintf(stderr, "something went wrong, can't find determinant\n");
+		}
 	} else if (c == 4) {
 		puts("coming soon...");
 	} else if (c == 5) {
 		puts("coming soon...");
-	} else if (c == 6) {	
-	} else
-		puts("something went wrong");
-	for (int i = 0; i < n; i++)
+	} else if (c == 6) {
+		// Do nothing...
+	} else {
+		fprintf(stderr, "something went wrong\n");
+	}
+
+	c = output_choice();
+	if (c == 0) {
+		if (!isnan(det_answer)) {
+			print_det(det_answer);
+		} else {
+			print_mat(&mat[0], "result: \n");
+		}
+	} else if (c == 1) {
+		puts("coming soon...");
+	} else if (c == 2) {
+		// Do nothing...
+	} else {
+		fprintf(stderr, "something went wrong\n");
+	}	
+	for (int i = 0; i < n; i++) {
 		free(mat[i].data);
+	}
 	free(mat);
 	bye();
 }
