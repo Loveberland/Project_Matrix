@@ -6,7 +6,11 @@
 
 .section	.text
 .globl	_trans_mat
+.globl	_trans_mat_w
+
+#ifndef _WIN32
 .type	_trans_mat, @function
+#endif
 
 .check_dims:
 	/* %rax holds total number of elements. */
@@ -116,6 +120,8 @@ _trans_mat:
 	movq	%r8, 16(%rdi)
 	movq	%r9, 8(%rdi)
 
+trans_mat_w:
+
 .ret_suc:
 	xorq	%rax, %rax
 	jmp .epilogue
@@ -133,6 +139,7 @@ _trans_mat:
 	popq	%rbp
 	ret
 
-
+#ifndef _WIN32
 .size	_trans_mat, . - _trans_mat
 .section	.note.GNU-stack, "", @progbits
+#endif
