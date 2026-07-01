@@ -7,6 +7,7 @@
 #include "calculate.h"
 #include "display.h"
 #include "choice.h"
+#include "file_handler.h"
 
 void greedy() {
 	fprintf(stdout, "--- Welcome to matrix calculator ---\n");
@@ -41,7 +42,8 @@ int main(void) {
 			fprintf(stderr, "Something went wrong, can't multiplication matrix.\n");
 		}
 	} else if (c == 3) {
-		if (det_mat(mat, &det_answer) == NAN) {
+		int det_result = det_mat(mat, &det_answer);
+		if (det_result || isnan(det_answer)) {
 			fprintf(stderr, "Something went wrong, can't find determinant.\n");
 		}
 	} else if (c == 4) {
@@ -65,7 +67,11 @@ int main(void) {
 			print_mat(&mat[0], "Result: \n");
 		}
 	} else if (c == 1) {
-		puts("Coming soon...");
+		if (!isnan(det_answer)) {
+			save_double_to_file(det_answer);
+		} else {
+			save_mat_to_file(&mat[0]);
+		}
 	} else if (c == 2) {
 		bye();
 		return (0);
