@@ -290,10 +290,7 @@ void t_det_mat() {
 	m1->data[2] = 670;
 	m1->data[3] = -67;
 	result = det_mat(m1, &answer);
-	if (result == NAN || !is_double_equal(answer, -45338.9)) {
-		fprintf(stderr, "Test 1: Failed");
-		abort();
-	}
+	assert(result != NAN && is_double_equal(answer, -45338.9));
 	free_mat(m1);
 
 	puts("Test 2:");
@@ -304,10 +301,7 @@ void t_det_mat() {
 	m2->data[2] = 6;
 	m2->data[3] = 8;
 	result = det_mat(m2, &answer);
-	if (result == NAN || !is_double_equal(answer, -8)) {
-		fprintf(stderr, "Test 2: Failed");
-		abort();
-	}
+	assert(result != NAN && is_double_equal(answer, -8));
 	free_mat(m2);
 
 	puts("Test 3:");
@@ -320,10 +314,7 @@ void t_det_mat() {
 	m3->data[12] = 0.67;
 	m3->data[15] = 1.0;
 	result = det_mat(m3, &answer);
-	if (result == NAN || !is_double_equal(answer, -341.164)) {
-		fprintf(stderr, "Test 3: Failed");
-		abort();
-	}
+	assert(result != NAN && is_double_equal(answer, -341.164));
 	free_mat(m3);
 
 	puts("Test 4:");
@@ -334,10 +325,7 @@ void t_det_mat() {
 	m4->data[6] = 1.0;
 	m4->data[8] = 1.0;
 	result = det_mat(m4, &answer);
-	if (result == NAN || !is_double_equal(answer, -22.747)) {
-		fprintf(stderr, "Test 4: Failed");
-		abort();
-	}
+	assert(result != NAN && is_double_equal(answer, -22.747));
 	free_mat(m4);
 
 	puts("Test 5:");
@@ -353,10 +341,78 @@ void t_det_mat() {
 	m5->data[7] = 23;
 	m5->data[8] = 22;
 	result = det_mat(m5, &answer);
-	if (result == NAN || !is_double_equal(answer, -11510.2)) {
-		fprintf(stderr, "Test 5: Failed");
-		abort();
+	assert(result != NAN && is_double_equal(answer, -11510.2));
+	free_mat(m5);
+}
+
+void t_trans_mat() {
+	puts("\033[0;33m--- Test trans_mat function ---\033[0m");
+	puts("Test 1:");
+	Matrix *m1 = malloc(sizeof(Matrix));
+	init_mat(m1, 3, 3, 0.0);
+	for (int i = 1; i <= 9; i++) {
+		m1->data[i - 1] = i;
 	}
+	assert(!trans_mat(m1));
+	assert(is_double_equal(MAT(m1, 0, 0), 1));
+	assert(is_double_equal(MAT(m1, 0, 1), 4));
+	assert(is_double_equal(MAT(m1, 0, 2), 7));
+	assert(is_double_equal(MAT(m1, 1, 0), 2));
+	assert(is_double_equal(MAT(m1, 1, 1), 5));
+	assert(is_double_equal(MAT(m1, 1, 2), 8));
+	assert(is_double_equal(MAT(m1, 2, 0), 3));
+	assert(is_double_equal(MAT(m1, 2, 1), 6));
+	assert(is_double_equal(MAT(m1, 2, 2), 9));
+	free_mat(m1);
+
+	puts("Test 2:");
+	Matrix *m2 = malloc(sizeof(Matrix));
+	init_mat(m2, 3, 2, 0.0);
+	for (int i = 0; i < 6; i++) {
+		m2->data[i] = i + 1;
+	}
+	assert(!trans_mat(m2));
+	assert(is_double_equal(MAT(m2, 0, 0), 1));
+	assert(is_double_equal(MAT(m2, 0, 1), 3));
+	assert(is_double_equal(MAT(m2, 0, 2), 5));
+	assert(is_double_equal(MAT(m2, 1, 0), 2));
+	assert(is_double_equal(MAT(m2, 1, 1), 4));
+	assert(is_double_equal(MAT(m2, 1, 2), 6));
+	free_mat(m2);
+
+	puts("Test 3:");
+	Matrix *m3 = malloc(sizeof(Matrix));
+	init_mat(m3, 2, 3, 0.0);
+	for (int i = 0; i < 6; i++) {
+		m3->data[i] = i + 1;
+	}
+	assert(!trans_mat(m3));
+	assert(is_double_equal(MAT(m3, 0, 0), 1));
+	assert(is_double_equal(MAT(m3, 0, 1), 4));
+	assert(is_double_equal(MAT(m3, 1, 0), 2));
+	assert(is_double_equal(MAT(m3, 1, 1), 5));
+	assert(is_double_equal(MAT(m3, 2, 0), 3));
+	assert(is_double_equal(MAT(m3, 2, 1), 6));
+	free_mat(m3);
+
+	puts("Test 4:");
+	Matrix *m4 = malloc(sizeof(Matrix));
+	init_mat(m4, 3, 1, 0.0);
+	for (int i = 0; i < 3; i++) {
+		m4->data[i] = i + 1;
+	}
+	assert(!trans_mat(m4));
+	assert(is_double_equal(MAT(m4, 0, 0), 1));
+	assert(is_double_equal(MAT(m4, 0, 1), 2));
+	assert(is_double_equal(MAT(m4, 0, 2), 3));
+	free_mat(m4);
+
+	puts("Test 5:");
+	Matrix *m5 = malloc(sizeof(Matrix));
+	m5->rows = 3;
+	m5->cols = 3;
+	m5->data = NULL;
+	assert(trans_mat(m5));
 	free_mat(m5);
 }
 
@@ -365,5 +421,6 @@ int main(void) {
 	t_sub_mat();
 	t_mul_mat();
 	t_det_mat();
+	t_trans_mat();
 	return (0);
 }

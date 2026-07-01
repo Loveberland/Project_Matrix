@@ -45,11 +45,14 @@ int main(void) {
 			fprintf(stderr, "Something went wrong, can't find determinant.\n");
 		}
 	} else if (c == 4) {
-		puts("Coming soon...");
+		if (trans_mat(mat) == -1) {
+			fprintf(stderr, "Something went wrong, can't find transpose.\n");
+		}
 	} else if (c == 5) {
 		puts("Coming soon...");
 	} else if (c == 6) {
-		// Do nothing...
+		bye();
+		return (0);
 	} else {
 		fprintf(stderr, "Something went wrong.\n");
 	}
@@ -64,7 +67,8 @@ int main(void) {
 	} else if (c == 1) {
 		puts("Coming soon...");
 	} else if (c == 2) {
-		// Do nothing...
+		bye();
+		return (0);
 	} else {
 		fprintf(stderr, "Something went wrong.\n");
 	}
@@ -75,4 +79,6 @@ int main(void) {
 	free(mat);
 
 	bye();
+
+	return (0);
 }
